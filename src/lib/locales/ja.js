@@ -421,6 +421,7 @@ export const strings = {
   'live_preview.not_configured':
     'ライブプレビューにはコレクション設定で preview_path の設定が必要です。',
   'live_preview.save_first': 'ライブプレビューを有効にするには、まずエントリーを保存してください。',
+  'live_preview.load_error': 'プレビューの読み込みに失敗しました。保存後にサイトの再ビルドが必要な場合があります。',
   show_content_options_x_locale: '{locale} コンテンツのオプションを表示',
   content_options_x_locale: '{locale} コンテンツのオプション',
   x_field: '「{field}」フィールド',

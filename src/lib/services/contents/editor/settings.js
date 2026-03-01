@@ -45,11 +45,11 @@ export const initSettings = async ({ repository }) => {
   entryEditorSettings.set(settings);
   selectAssetsView.set(settings.selectAssetsView);
 
-  if (settings.previewViewport) {
+  if (['desktop', 'tablet', 'mobile'].includes(settings.previewViewport)) {
     previewViewport.set(settings.previewViewport);
   }
 
-  if (settings.previewMode) {
+  if (['fields', 'live'].includes(settings.previewMode)) {
     previewMode.set(settings.previewMode);
   }
 
