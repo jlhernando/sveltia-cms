@@ -1,8 +1,5 @@
 import { derived, get, writable } from 'svelte/store';
 
-import { cmsConfig } from '$lib/services/config';
-import { allEntries } from '$lib/services/contents';
-
 /**
  * @import { Readable, Writable } from 'svelte/store';
  * @import { Entry } from '$lib/types/private';
@@ -52,10 +49,56 @@ export const TRANSITION_ICONS = {
   ready: 'check_circle',
 };
 
-// Fallback store used when `cmsConfig` or `allEntries` is undefined in test environments
-// where modules are auto-mocked. Required for test compatibility.
-/** @type {Writable<undefined>} */
-const fallbackStore = writable(undefined);
+/**
+ * Internal proxy store for `cmsConfig`. Avoids importing `$lib/services/config` at the top level,
+ * which causes a circular dependency in the bundled output (TDZ error). Gets wired up lazily
+ * via {@link connectStores}.
+ * @type {Writable<any>}
+ */
+const configProxy = writable(undefined);
+
+/**
+ * Internal proxy store for `allEntries`. Avoids importing `$lib/services/contents` at the top
+ * level for the same reason. Gets wired up lazily via {@link connectStores}.
+ * @type {Writable<any>}
+ */
+const entriesProxy = writable(undefined);
+
+/**
+ * Whether the proxy stores have been connected to the real stores.
+ * @type {boolean}
+ */
+let storesConnected = false;
+
+/**
+ * Connect the proxy stores to the real `cmsConfig` and `allEntries` stores. Called lazily on first
+ * use to break the circular dependency that exists at module initialization time.
+ */
+const connectStores = () => {
+  if (storesConnected) {
+    return;
+  }
+
+  storesConnected = true;
+
+  // Dynamic imports are resolved synchronously here because by the time any code calls
+  // connectStores(), all modules have been loaded and evaluated.
+  import('$lib/services/config').then(({ cmsConfig }) => {
+    if (cmsConfig?.subscribe) {
+      cmsConfig.subscribe(($config) => {
+        configProxy.set($config);
+      });
+    }
+  });
+
+  import('$lib/services/contents').then(({ allEntries }) => {
+    if (allEntries?.subscribe) {
+      allEntries.subscribe(($entries) => {
+        entriesProxy.set($entries);
+      });
+    }
+  });
+};
 
 /**
  * localStorage key for persisting workflow statuses across page reloads.
@@ -102,7 +145,9 @@ const saveToLocalStorage = (statusMap) => {
  * Whether editorial workflow is enabled in the CMS configuration.
  * @type {Readable<boolean>}
  */
-export const workflowEnabled = derived(cmsConfig ?? fallbackStore, ($config) => {
+export const workflowEnabled = derived(configProxy, ($config) => {
+  connectStores();
+
   return $config?.publish_mode === 'editorial_workflow';
 });
 
@@ -191,7 +236,8 @@ export const transitionEntry = (entryId, newStatus) => {
  * @returns {boolean} Whether the entry exists.
  */
 export const isKnownEntry = (entryId) => {
-  const entries = get(allEntries);
+  connectStores();
+  const entries = get(entriesProxy);
 
   return !!entries?.some((e) => e.id === entryId);
 };
@@ -201,7 +247,7 @@ export const isKnownEntry = (entryId) => {
  * @type {Readable<Record<WorkflowStatus, Entry[]>>}
  */
 export const entriesByWorkflowStatus = derived(
-  [allEntries ?? fallbackStore, workflowStatuses, workflowEnabled],
+  [entriesProxy, workflowStatuses, workflowEnabled],
   ([$allEntries, $workflowStatuses, $workflowEnabled]) => {
     /** @type {Record<WorkflowStatus, Entry[]>} */
     const grouped = {
@@ -236,6 +282,8 @@ export const entriesByWorkflowStatus = derived(
  * @param {Entry[]} entries All entries.
  */
 export const initWorkflowStatuses = (entries) => {
+  connectStores();
+
   if (!get(workflowEnabled)) {
     return;
   }
