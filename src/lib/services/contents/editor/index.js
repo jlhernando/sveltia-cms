@@ -8,6 +8,35 @@ import { writable } from 'svelte/store';
  */
 
 /**
+ * @typedef {'desktop' | 'tablet' | 'mobile'} PreviewViewport
+ */
+
+/**
+ * @type {{ width: number, height: number, label: string, icon: string }}
+ */
+export const VIEWPORT_PRESETS = /** @type {const} */ ({
+  mobile: { width: 375, height: 667, label: 'preview_viewport.mobile', icon: 'phone_iphone' },
+  tablet: { width: 768, height: 1024, label: 'preview_viewport.tablet', icon: 'tablet_mac' },
+  desktop: { width: 0, height: 0, label: 'preview_viewport.desktop', icon: 'monitor' },
+});
+
+/**
+ * Current preview viewport setting.
+ * @type {Writable<PreviewViewport>}
+ */
+export const previewViewport = writable('desktop');
+
+/**
+ * @typedef {'fields' | 'live'} PreviewMode
+ */
+
+/**
+ * Current preview mode: 'fields' for field-by-field preview, 'live' for live site iframe.
+ * @type {Writable<PreviewMode>}
+ */
+export const previewMode = writable('fields');
+
+/**
  * @typedef {object} CopyToastState
  * @property {number | undefined} id Unique identifier for the toast.
  * @property {boolean} show Whether the toast is currently visible.

@@ -400,6 +400,21 @@ export const strings = {
   edit_x_locale: 'Edit {locale} Content',
   preview_x_locale: 'Preview {locale} Content',
   content_preview: 'Content Preview',
+  // Preview Viewport
+  'preview_viewport.switch': 'Switch Preview Device',
+  'preview_viewport.mobile': 'Mobile',
+  'preview_viewport.tablet': 'Tablet',
+  'preview_viewport.desktop': 'Desktop',
+  // Live Preview
+  'live_preview.switch_mode': 'Switch Preview Mode',
+  'live_preview.fields_mode': 'Field Preview',
+  'live_preview.live_mode': 'Live Site Preview',
+  'live_preview.title': 'Live Site Preview',
+  'live_preview.refresh': 'Refresh Preview',
+  'live_preview.open_in_new_tab': 'Open in New Tab',
+  'live_preview.not_configured':
+    'Live preview requires a preview_path to be configured in your collection settings.',
+  'live_preview.save_first': 'Save the entry first to enable live preview.',
   show_content_options_x_locale: 'Show {locale} Content Options',
   content_options_x_locale: '{locale} Content Options',
   x_field: '“{field}” Field',
