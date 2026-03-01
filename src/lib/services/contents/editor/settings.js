@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal';
 import { get, writable } from 'svelte/store';
 
 import { backend } from '$lib/services/backends';
-import { selectAssetsView } from '$lib/services/contents/editor';
+import { previewMode, previewViewport, selectAssetsView } from '$lib/services/contents/editor';
 
 /**
  * @import { Writable } from 'svelte/store';
@@ -17,7 +17,12 @@ export const entryEditorSettings = writable();
 
 /**
  * Store unsubscribe functions to prevent memory leaks.
- * @type {{ entryEditorSettingsUnsubscribe?: () => void, selectAssetsViewUnsubscribe?: () => void }}
+ * @type {{
+ *   entryEditorSettingsUnsubscribe?: () => void,
+ *   selectAssetsViewUnsubscribe?: () => void,
+ *   previewViewportUnsubscribe?: () => void,
+ *   previewModeUnsubscribe?: () => void,
+ * }}
  */
 const unsubscribers = {};
 
@@ -40,9 +45,19 @@ export const initSettings = async ({ repository }) => {
   entryEditorSettings.set(settings);
   selectAssetsView.set(settings.selectAssetsView);
 
+  if (settings.previewViewport) {
+    previewViewport.set(settings.previewViewport);
+  }
+
+  if (settings.previewMode) {
+    previewMode.set(settings.previewMode);
+  }
+
   // Unsubscribe from previous subscribers to prevent memory leaks
   unsubscribers.entryEditorSettingsUnsubscribe?.();
   unsubscribers.selectAssetsViewUnsubscribe?.();
+  unsubscribers.previewViewportUnsubscribe?.();
+  unsubscribers.previewModeUnsubscribe?.();
 
   unsubscribers.entryEditorSettingsUnsubscribe = entryEditorSettings.subscribe((_settings) => {
     (async () => {
@@ -65,6 +80,22 @@ export const initSettings = async ({ repository }) => {
 
     if (!equal(view, savedView)) {
       entryEditorSettings.update((_settings) => ({ ..._settings, selectAssetsView: view }));
+    }
+  });
+
+  unsubscribers.previewViewportUnsubscribe = previewViewport.subscribe((viewport) => {
+    const saved = get(entryEditorSettings)?.previewViewport;
+
+    if (viewport !== saved) {
+      entryEditorSettings.update((_settings) => ({ ..._settings, previewViewport: viewport }));
+    }
+  });
+
+  unsubscribers.previewModeUnsubscribe = previewMode.subscribe((mode) => {
+    const saved = get(entryEditorSettings)?.previewMode;
+
+    if (mode !== saved) {
+      entryEditorSettings.update((_settings) => ({ ..._settings, previewMode: mode }));
     }
   });
 };

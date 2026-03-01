@@ -406,6 +406,21 @@ export const strings = {
   edit_x_locale: '{locale} コンテンツを編集',
   preview_x_locale: '{locale} コンテンツをプレビュー',
   content_preview: 'コンテンツプレビュー',
+  // プレビュービューポート
+  'preview_viewport.switch': 'プレビューデバイスを切り替え',
+  'preview_viewport.mobile': 'モバイル',
+  'preview_viewport.tablet': 'タブレット',
+  'preview_viewport.desktop': 'デスクトップ',
+  // ライブプレビュー
+  'live_preview.switch_mode': 'プレビューモードを切り替え',
+  'live_preview.fields_mode': 'フィールドプレビュー',
+  'live_preview.live_mode': 'ライブサイトプレビュー',
+  'live_preview.title': 'ライブサイトプレビュー',
+  'live_preview.refresh': 'プレビューを更新',
+  'live_preview.open_in_new_tab': '新しいタブで開く',
+  'live_preview.not_configured':
+    'ライブプレビューにはコレクション設定で preview_path の設定が必要です。',
+  'live_preview.save_first': 'ライブプレビューを有効にするには、まずエントリーを保存してください。',
   show_content_options_x_locale: '{locale} コンテンツのオプションを表示',
   content_options_x_locale: '{locale} コンテンツのオプション',
   x_field: '「{field}」フィールド',

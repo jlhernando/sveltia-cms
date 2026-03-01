@@ -1,5 +1,16 @@
 <script>
-  import { Divider, Menu, MenuButton, MenuItem, Spacer, Toolbar } from '@sveltia/ui';
+  import {
+    Button,
+    Divider,
+    Icon,
+    Menu,
+    MenuButton,
+    MenuItem,
+    SelectButton,
+    SelectButtonGroup,
+    Spacer,
+    Toolbar,
+  } from '@sveltia/ui';
   import equal from 'fast-deep-equal';
   import { writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
@@ -12,6 +23,7 @@
   import { entryDraft } from '$lib/services/contents/draft';
   import { toggleLocale } from '$lib/services/contents/draft/update/locale';
   import { revertChanges } from '$lib/services/contents/draft/update/revert';
+  import { previewMode, previewViewport, VIEWPORT_PRESETS } from '$lib/services/contents/editor';
   import { getEntryPreviewURL, getEntryRepoBlobURL } from '$lib/services/contents/entry';
   import { getLocaleLabel } from '$lib/services/contents/i18n';
   import { DEFAULT_I18N_CONFIG } from '$lib/services/contents/i18n/config';
@@ -80,6 +92,49 @@
       <h3 role="none">{$thisPane?.mode === 'preview' ? $_('preview') : $_('edit')}</h3>
     {:else if canPreview}
       <PreviewButton {thisPane} />
+    {/if}
+    {#if $thisPane?.mode === 'preview' && !($isSmallScreen || $isMediumScreen)}
+      <SelectButtonGroup aria-label={$_('live_preview.switch_mode')}>
+        <SelectButton
+          selected={$previewMode === 'fields'}
+          variant="ghost"
+          iconic
+          aria-label={$_('live_preview.fields_mode')}
+          onSelect={() => { $previewMode = 'fields'; }}
+        >
+          {#snippet startIcon()}
+            <Icon name="list_alt" />
+          {/snippet}
+        </SelectButton>
+        <SelectButton
+          selected={$previewMode === 'live'}
+          variant="ghost"
+          iconic
+          aria-label={$_('live_preview.live_mode')}
+          onSelect={() => { $previewMode = 'live'; }}
+        >
+          {#snippet startIcon()}
+            <Icon name="language" />
+          {/snippet}
+        </SelectButton>
+      </SelectButtonGroup>
+      <SelectButtonGroup aria-label={$_('preview_viewport.switch')}>
+        {#each /** @type {const} */ (['mobile', 'tablet', 'desktop']) as device (device)}
+          <SelectButton
+            selected={$previewViewport === device}
+            variant="ghost"
+            iconic
+            aria-label={$_(VIEWPORT_PRESETS[device].label)}
+            onSelect={() => {
+              $previewViewport = device;
+            }}
+          >
+            {#snippet startIcon()}
+              <Icon name={VIEWPORT_PRESETS[device].icon} />
+            {/snippet}
+          </SelectButton>
+        {/each}
+      </SelectButtonGroup>
     {/if}
     <Spacer flex />
     {#if $thisPane?.mode === 'edit'}

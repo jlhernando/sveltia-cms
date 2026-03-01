@@ -60,22 +60,36 @@ vi.mock('$lib/services/backends', () => {
 });
 
 vi.mock('$lib/services/contents/editor', () => {
-  const callbacks = { selectAssetsView: [] };
+  const callbacks = { selectAssetsView: [], previewViewport: [], previewMode: [] };
 
   return {
     selectAssetsView: {
       set: vi.fn(),
       subscribe: vi.fn((callback) => {
-        // Store callback so we can call it later
         // @ts-ignore
         callbacks.selectAssetsView.push(callback);
 
-        return () => {
-          // unsubscribe
-        };
+        return () => {};
       }),
-      // Expose callbacks for testing
       _mockCallbacks: callbacks,
+    },
+    previewViewport: {
+      set: vi.fn(),
+      subscribe: vi.fn((callback) => {
+        // @ts-ignore
+        callbacks.previewViewport.push(callback);
+
+        return () => {};
+      }),
+    },
+    previewMode: {
+      set: vi.fn(),
+      subscribe: vi.fn((callback) => {
+        // @ts-ignore
+        callbacks.previewMode.push(callback);
+
+        return () => {};
+      }),
     },
   };
 });
