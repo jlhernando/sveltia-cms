@@ -29,30 +29,49 @@
   const collectionFile = $derived($entryDraft?.collectionFile);
   const originalEntry = $derived($entryDraft?.originalEntry);
 
-  const previewURL = $derived(
-    collection && originalEntry && locale
-      ? getEntryPreviewURL(originalEntry, locale, collection, collectionFile)
-      : undefined,
-  );
+  const previewURL = $derived(() => {
+    const url =
+      collection && originalEntry && locale
+        ? getEntryPreviewURL(originalEntry, locale, collection, collectionFile)
+        : undefined;
+
+    // Guard against non-http protocols
+    if (url && !/^https?:\/\//i.test(url)) {
+      return undefined;
+    }
+
+    return url;
+  });
 
   let loading = $state(true);
+  let loadError = $state(false);
   let refreshKey = $state(0);
 
-  /** @type {HTMLIFrameElement | undefined} */
-  let iframe = $state();
+  // Reset loading state when the preview URL changes (e.g. navigating to a different entry)
+  $effect(() => {
+    void previewURL;
+    loading = true;
+    loadError = false;
+  });
 
   const handleLoad = () => {
     loading = false;
   };
 
+  const handleError = () => {
+    loading = false;
+    loadError = true;
+  };
+
   const refresh = () => {
     loading = true;
+    loadError = false;
     refreshKey += 1;
   };
 
   const openInNewTab = () => {
     if (previewURL) {
-      window.open(previewURL, '_blank');
+      window.open(previewURL, '_blank', 'noopener,noreferrer');
     }
   };
 </script>
@@ -91,14 +110,19 @@
           <span>{$_('loading')}</span>
         </div>
       {/if}
+      {#if loadError}
+        <div class="error-overlay">
+          <span>{$_('live_preview.load_error')}</span>
+        </div>
+      {/if}
       {#key refreshKey}
         <iframe
           class="live-site"
           src={previewURL}
           title={$_('live_preview.title')}
-          sandbox="allow-same-origin allow-scripts allow-popups"
-          bind:this={iframe}
+          sandbox="allow-scripts allow-popups"
           onload={handleLoad}
+          onerror={handleError}
         ></iframe>
       {/key}
     </div>
@@ -151,7 +175,8 @@
     position: relative;
   }
 
-  .loading-overlay {
+  .loading-overlay,
+  .error-overlay {
     position: absolute;
     inset: 0;
     display: flex;
@@ -162,7 +187,9 @@
     background-color: var(--sui-primary-background-color);
     color: var(--sui-tertiary-foreground-color);
     z-index: 1;
+  }
 
+  .loading-overlay {
     :global(.icon) {
       font-size: 24px;
       animation: spin 1s linear infinite;

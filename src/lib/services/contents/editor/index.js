@@ -12,7 +12,7 @@ import { writable } from 'svelte/store';
  */
 
 /**
- * @type {{ width: number, height: number, label: string, icon: string }}
+ * @type {Record<PreviewViewport, { width: number, height: number, label: string, icon: string }>}
  */
 export const VIEWPORT_PRESETS = /** @type {const} */ ({
   mobile: { width: 375, height: 667, label: 'preview_viewport.mobile', icon: 'phone_iphone' },

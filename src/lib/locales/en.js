@@ -415,6 +415,7 @@ export const strings = {
   'live_preview.not_configured':
     'Live preview requires a preview_path to be configured in your collection settings.',
   'live_preview.save_first': 'Save the entry first to enable live preview.',
+  'live_preview.load_error': 'Failed to load preview. The site may need to rebuild after saving.',
   show_content_options_x_locale: 'Show {locale} Content Options',
   content_options_x_locale: '{locale} Content Options',
   x_field: '“{field}” Field',

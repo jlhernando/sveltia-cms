@@ -48,29 +48,18 @@
   {/each}
 {/snippet}
 
-{#if isLiveMode}
-  <div
-    class="preview-viewport"
-    class:constrained={isConstrained}
-    style:--viewport-width={isConstrained ? `${viewport.width}px` : '100%'}
-  >
-    {#if isConstrained}
-      <div class="viewport-label">{$_(viewport.label)} — {viewport.width}×{viewport.height}</div>
-    {/if}
-    <div class="viewport-frame" class:constrained={isConstrained}>
+<div
+  class="preview-viewport"
+  class:constrained={isConstrained}
+  style:--viewport-width={isConstrained ? `${viewport.width}px` : '100%'}
+>
+  {#if isConstrained}
+    <div class="viewport-label">{$_(viewport.label)} — {viewport.width}×{viewport.height}</div>
+  {/if}
+  <div class="viewport-frame" class:constrained={isConstrained}>
+    {#if isLiveMode}
       <LivePreview {locale} />
-    </div>
-  </div>
-{:else}
-  <div
-    class="preview-viewport"
-    class:constrained={isConstrained}
-    style:--viewport-width={isConstrained ? `${viewport.width}px` : '100%'}
-  >
-    {#if isConstrained}
-      <div class="viewport-label">{$_(viewport.label)} — {viewport.width}×{viewport.height}</div>
-    {/if}
-    <div class="viewport-frame" class:constrained={isConstrained}>
+    {:else}
       <VisibilityObserver>
         {#if customPreviewStyleRegistry.size}
           <EntryPreviewIframe {locale} styleURLs={[...customPreviewStyleRegistry]} {children} />
@@ -80,9 +69,9 @@
           </div>
         {/if}
       </VisibilityObserver>
-    </div>
+    {/if}
   </div>
-{/if}
+</div>
 
 <style lang="scss">
   .preview-viewport {
