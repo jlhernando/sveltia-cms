@@ -105,6 +105,13 @@
           }
         }
 
+        .card-footer {
+          display: flex;
+          align-items: center;
+          padding: 8px 12px;
+          border-top: 1px solid var(--sui-secondary-border-color);
+        }
+
         &[tabindex] {
           border-radius: var(--sui-control-large-border-radius);
           border: 1px solid var(--sui-secondary-border-color);
@@ -216,6 +223,15 @@
               background-color: var(--sui-secondary-background-color);
               content: '';
             }
+          }
+
+          &.card-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 180px;
+            padding-inline-end: 16px;
+            border-top: none;
           }
         }
       }

@@ -12,11 +12,49 @@
   import { listedEntries } from '$lib/services/contents/collection/view';
   import { getEntryThumbnail } from '$lib/services/contents/entry/assets';
   import { getEntrySummary } from '$lib/services/contents/entry/summary';
+  import { getEntryWorkflowStatus } from '$lib/services/contents/workflow';
   import { isMediumScreen, isSmallScreen } from '$lib/services/user/env';
 
   /**
    * @import { Entry, InternalEntryCollection, ViewType } from '$lib/types/private';
    */
+
+  /**
+   * Gradient palette for collection card thumbnails. Each collection name hashes to a gradient.
+   * @type {string[][]}
+   */
+  const GRADIENTS = [
+    ['#3b82f6', '#1d4ed8'], // blue
+    ['#8b5cf6', '#6d28d9'], // purple
+    ['#10b981', '#059669'], // emerald
+    ['#f59e0b', '#d97706'], // amber
+    ['#ec4899', '#db2777'], // pink
+    ['#06b6d4', '#0891b2'], // cyan
+    ['#f97316', '#ea580c'], // orange
+    ['#6366f1', '#4f46e5'], // indigo
+  ];
+
+  /**
+   * Get a gradient for a collection name based on simple string hash.
+   * @param {string} name Collection name.
+   * @returns {string} CSS gradient string.
+   */
+  const getCollectionGradient = (name) => {
+    let hash = 0;
+
+    for (let i = 0; i < name.length; i += 1) {
+      hash = (hash * 31 + name.charCodeAt(i)) | 0;
+    }
+
+    const [from, to] = GRADIENTS[Math.abs(hash) % GRADIENTS.length];
+
+    return `linear-gradient(135deg, ${from}, ${to})`;
+  };
+
+  /** Status label map. */
+  const STATUS_LABELS = { draft: 'Draft', in_review: 'In Review', ready: 'Published' };
+  /** Status color map. */
+  const STATUS_COLORS = { draft: '#f59e0b', in_review: '#3b82f6', ready: '#10b981' };
 
   /**
    * @typedef {object} Props
@@ -33,6 +71,11 @@
     viewType,
     /* eslint-enable prefer-const */
   } = $props();
+
+  const gradient = $derived(getCollectionGradient(collection.name));
+  const collectionIcon = $derived(collection.icon || 'bookmark_manager');
+  const localeKeys = $derived(Object.keys(entry.locales));
+  const workflowStatus = $derived(entry.id ? getEntryWorkflowStatus(entry.id) : 'draft');
 
   /**
    * Update the entry selection.
@@ -78,15 +121,31 @@
       />
     </GridCell>
   {/if}
-  {#if collection._thumbnailFieldNames.length}
-    <GridCell class="image">
+  <GridCell class="image">
+    {#if collection._thumbnailFieldNames.length}
       {#await getEntryThumbnail(collection, entry) then src}
         {#if src}
           <Image {src} variant={viewType === 'list' ? 'icon' : 'tile'} cover />
+        {:else}
+          <div
+            class="gradient-thumb"
+            class:list-mode={viewType === 'list'}
+            style:background={gradient}
+          >
+            <Icon name={collectionIcon} />
+          </div>
         {/if}
       {/await}
-    </GridCell>
-  {/if}
+    {:else}
+      <div
+        class="gradient-thumb"
+        class:list-mode={viewType === 'list'}
+        style:background={gradient}
+      >
+        <Icon name={collectionIcon} />
+      </div>
+    {/if}
+  </GridCell>
   <GridCell class="title">
     <div role="none" class="label">
       <TruncatedText lines={2}>
@@ -99,9 +158,80 @@
       </TruncatedText>
     </div>
   </GridCell>
+  <GridCell class="card-footer">
+    <span class="status-badge" style:--status-color={STATUS_COLORS[workflowStatus] || '#94a3b8'}>
+      <span class="status-dot"></span>
+      {STATUS_LABELS[workflowStatus] || 'Draft'}
+    </span>
+    {#if localeKeys.length > 1}
+      <span class="locale-tags">
+        {#each localeKeys as locale}
+          <span class="locale-tag">{locale}</span>
+        {/each}
+      </span>
+    {/if}
+  </GridCell>
 </GridRow>
 
 <style lang="scss">
+  .gradient-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+
+    :global(.icon) {
+      font-size: 40px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    &.list-mode {
+      aspect-ratio: unset;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+
+      :global(.icon) {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--sui-secondary-foreground-color);
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--status-color);
+    flex-shrink: 0;
+  }
+
+  .locale-tags {
+    display: inline-flex;
+    gap: 4px;
+    margin-inline-start: auto;
+  }
+
+  .locale-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: var(--sui-tertiary-background-color);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--sui-secondary-foreground-color);
+    text-transform: uppercase;
+  }
+
   .label {
     :global {
       .icon.home {
