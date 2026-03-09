@@ -128,7 +128,9 @@
 
     h1 {
       font-size: 48px;
+      font-weight: 600;
       letter-spacing: -0.5px;
+      line-height: 1.1;
     }
 
     .logo ~ h1 {
@@ -185,6 +187,7 @@
     inset: auto 24px 24px;
     color: var(--enterprise-nav-text); // visible on dark background
     font-size: var(--sui-font-size-small);
+    letter-spacing: 0.5px;
     text-align: center;
   }
 </style>

@@ -197,8 +197,10 @@
   .status-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
     color: var(--sui-secondary-foreground-color);
     flex-shrink: 0;
   }
@@ -233,11 +235,12 @@
 
   .locale-tag {
     display: inline-block;
-    padding: 1px 6px;
+    padding: 2px 6px;
     border-radius: 4px;
     background-color: var(--sui-tertiary-background-color);
     font-size: 10px;
     font-weight: 500;
+    letter-spacing: 0.5px;
     color: var(--sui-secondary-foreground-color);
     text-transform: uppercase;
     flex-shrink: 0;

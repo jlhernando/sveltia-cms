@@ -99,7 +99,7 @@
     flex-shrink: 0;
 
     :global(.icon) {
-      font-size: 22px;
+      font-size: 20px;
     }
 
     .total & {
@@ -133,11 +133,14 @@
     font-size: 24px;
     font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.2px;
     color: var(--sui-primary-foreground-color);
   }
 
   .stat-label {
     font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
     color: var(--sui-secondary-foreground-color);
     white-space: nowrap;
     overflow: hidden;

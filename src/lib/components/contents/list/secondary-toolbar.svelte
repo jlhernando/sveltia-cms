@@ -126,10 +126,11 @@
     appearance: none;
     border: 1px solid var(--sui-control-border-color);
     border-radius: 20px;
-    padding: 4px 14px;
+    padding: 4px 12px;
     font-size: var(--sui-font-size-small);
     font-family: var(--sui-font-family-default);
     font-weight: 500;
+    letter-spacing: 0.3px;
     background-color: transparent;
     color: var(--sui-secondary-foreground-color);
     cursor: pointer;
