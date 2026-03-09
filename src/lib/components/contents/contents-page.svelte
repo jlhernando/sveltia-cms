@@ -12,6 +12,7 @@
   import PrimaryToolbar from '$lib/components/contents/list/primary-toolbar.svelte';
   import SecondarySidebar from '$lib/components/contents/list/secondary-sidebar.svelte';
   import SecondaryToolbar from '$lib/components/contents/list/secondary-toolbar.svelte';
+  import StatsDashboard from '$lib/components/contents/list/stats-dashboard.svelte';
   import {
     announcedPageStatus,
     goto,
@@ -226,6 +227,7 @@
           {/if}
         {/snippet}
         {#snippet mainContent()}
+          <StatsDashboard />
           <MainContent />
         {/snippet}
         {#snippet secondarySidebar()}
