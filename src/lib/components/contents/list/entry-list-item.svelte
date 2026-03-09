@@ -1,6 +1,6 @@
 <script>
   import { Checkbox, GridCell, GridRow, Icon, TruncatedText } from '@sveltia/ui';
-  import { locale as appLocale } from 'svelte-i18n';
+  import { _, locale as appLocale } from 'svelte-i18n';
 
   import Image from '$lib/components/assets/shared/image.svelte';
   import { goto } from '$lib/services/app/navigation';
@@ -12,7 +12,7 @@
   import { listedEntries } from '$lib/services/contents/collection/view';
   import { getEntryThumbnail } from '$lib/services/contents/entry/assets';
   import { getEntrySummary } from '$lib/services/contents/entry/summary';
-  import { getEntryWorkflowStatus } from '$lib/services/contents/workflow';
+  import { workflowStatuses } from '$lib/services/contents/workflow';
   import { isMediumScreen, isSmallScreen } from '$lib/services/user/env';
 
   /**
@@ -51,10 +51,8 @@
     return `linear-gradient(135deg, ${from}, ${to})`;
   };
 
-  /** Status label map. */
-  const STATUS_LABELS = { draft: 'Draft', in_review: 'In Review', ready: 'Published' };
-  /** Status color map. */
-  const STATUS_COLORS = { draft: '#f59e0b', in_review: '#3b82f6', ready: '#10b981' };
+  /** Status i18n key map. */
+  const STATUS_I18N_KEYS = { draft: 'status.drafts', in_review: 'status.in_review', ready: 'status.ready' };
 
   /**
    * @typedef {object} Props
@@ -75,7 +73,7 @@
   const gradient = $derived(getCollectionGradient(collection.name));
   const collectionIcon = $derived(collection.icon || 'bookmark_manager');
   const localeKeys = $derived(Object.keys(entry.locales));
-  const workflowStatus = $derived(entry.id ? getEntryWorkflowStatus(entry.id) : 'draft');
+  const workflowStatus = $derived($workflowStatuses?.get?.(entry.id) ?? 'draft');
 
   /**
    * Update the entry selection.
@@ -97,6 +95,16 @@
     });
   };
 </script>
+
+{#snippet gradientThumb()}
+  <div
+    class="gradient-thumb"
+    class:list-mode={viewType === 'list'}
+    style:background={gradient}
+  >
+    <Icon name={collectionIcon} />
+  </div>
+{/snippet}
 
 <GridRow
   aria-rowindex={$listedEntries.indexOf(entry)}
@@ -127,23 +135,11 @@
         {#if src}
           <Image {src} variant={viewType === 'list' ? 'icon' : 'tile'} cover />
         {:else}
-          <div
-            class="gradient-thumb"
-            class:list-mode={viewType === 'list'}
-            style:background={gradient}
-          >
-            <Icon name={collectionIcon} />
-          </div>
+          {@render gradientThumb()}
         {/if}
       {/await}
     {:else}
-      <div
-        class="gradient-thumb"
-        class:list-mode={viewType === 'list'}
-        style:background={gradient}
-      >
-        <Icon name={collectionIcon} />
-      </div>
+      {@render gradientThumb()}
     {/if}
   </GridCell>
   <GridCell class="title">
@@ -159,9 +155,9 @@
     </div>
   </GridCell>
   <GridCell class="card-footer">
-    <span class="status-badge" style:--status-color={STATUS_COLORS[workflowStatus] || '#94a3b8'}>
+    <span class="status-badge status-{workflowStatus}">
       <span class="status-dot"></span>
-      {STATUS_LABELS[workflowStatus] || 'Draft'}
+      {$_(STATUS_I18N_KEYS[workflowStatus] || 'status.drafts')}
     </span>
     {#if localeKeys.length > 1}
       <span class="locale-tags">
@@ -204,6 +200,7 @@
     gap: 6px;
     font-size: 12px;
     color: var(--sui-secondary-foreground-color);
+    flex-shrink: 0;
   }
 
   .status-dot {
@@ -211,14 +208,27 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--status-color);
     flex-shrink: 0;
+  }
+
+  .status-draft .status-dot {
+    background-color: var(--sui-warning-foreground-color, #f59e0b);
+  }
+
+  .status-in_review .status-dot {
+    background-color: var(--sui-primary-accent-color, #3b82f6);
+  }
+
+  .status-ready .status-dot {
+    background-color: var(--sui-success-foreground-color, #10b981);
   }
 
   .locale-tags {
     display: inline-flex;
     gap: 4px;
     margin-inline-start: auto;
+    overflow: hidden;
+    flex-wrap: nowrap;
   }
 
   .locale-tag {
@@ -230,6 +240,7 @@
     font-weight: 500;
     color: var(--sui-secondary-foreground-color);
     text-transform: uppercase;
+    flex-shrink: 0;
   }
 
   .label {
