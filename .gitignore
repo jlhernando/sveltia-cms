@@ -5,3 +5,10 @@ node_modules
 *.log
 *.local
 .DS_Store
+
+# Claude Code
+.claude/
+.mcp.json
+
+# Debug screenshots
+*.png
