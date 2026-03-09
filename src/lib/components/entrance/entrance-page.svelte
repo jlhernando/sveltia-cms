@@ -90,7 +90,11 @@
     align-items: center;
     gap: 16px;
     padding: 32px;
-    background: linear-gradient(135deg, var(--enterprise-nav-bg), var(--enterprise-nav-bg-secondary));
+    background:
+      radial-gradient(ellipse at 20% 20%, hsl(211 80% 60% / 30%) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, hsl(260 70% 55% / 25%) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, hsl(190 60% 50% / 15%) 0%, transparent 60%),
+      var(--enterprise-nav-bg);
 
     .inner {
       display: flex;
@@ -100,12 +104,13 @@
       min-width: 240px;
       max-width: 800px;
       min-height: 240px;
-      background-color: var(--sui-content-background-color);
+      background-color: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 52px 44px;
-      box-shadow:
-        0 10px 15px -3px rgb(0 0 0 / 8%),
-        0 4px 6px -4px rgb(0 0 0 / 4%);
+      box-shadow: var(--glass-shadow);
 
       @media (width < 768px) {
         padding: 32px 24px;
