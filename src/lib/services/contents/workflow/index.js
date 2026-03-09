@@ -159,6 +159,13 @@ export const workflowEnabled = derived(configProxy, ($config) => {
 export const workflowStatuses = writable(new Map());
 
 /**
+ * The currently selected workflow status filter in the toolbar pills.
+ * 'all' means no filtering; otherwise a specific WorkflowStatus value.
+ * @type {Writable<'all' | WorkflowStatus>}
+ */
+export const activeStatusFilter = writable('all');
+
+/**
  * The key used in the frontmatter/content to store workflow status when editorial workflow is
  * enabled. We use a double-underscore prefix to signal it's internal metadata.
  * @type {string}

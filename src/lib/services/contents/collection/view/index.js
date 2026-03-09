@@ -9,6 +9,11 @@ import { getCollectionFilesByEntry } from '$lib/services/contents/collection/fil
 import { filterEntries } from '$lib/services/contents/collection/view/filter';
 import { groupEntries } from '$lib/services/contents/collection/view/group';
 import { sortEntries } from '$lib/services/contents/collection/view/sort';
+import {
+  activeStatusFilter,
+  getEntryWorkflowStatus,
+  workflowEnabled,
+} from '$lib/services/contents/workflow';
 import { prefs } from '$lib/services/user/prefs';
 
 /**
@@ -94,10 +99,10 @@ let cacheKey = '';
  */
 export const entryGroups = derived(
   // Include `appLocale` as a dependency because `sortEntries()` and `groupEntries()` may return
-  // localized labels
-  [listedEntries, currentView, appLocale],
-  ([_listedEntries, _currentView], set) => {
-    const newCacheKey = JSON.stringify({ _listedEntries, _currentView });
+  // localized labels. Include `activeStatusFilter` and `workflowEnabled` for workflow filtering.
+  [listedEntries, currentView, appLocale, activeStatusFilter, workflowEnabled],
+  ([_listedEntries, _currentView, , _statusFilter, _workflowEnabled], set) => {
+    const newCacheKey = JSON.stringify({ _listedEntries, _currentView, _statusFilter });
 
     if (newCacheKey === cacheKey) {
       return;
@@ -121,6 +126,13 @@ export const entryGroups = derived(
 
     if (_currentView.filters) {
       entries = filterEntries(entries, collection, _currentView.filters);
+    }
+
+    // Apply workflow status filter from toolbar pills
+    if (_workflowEnabled && _statusFilter !== 'all') {
+      entries = entries.filter(
+        (entry) => entry.id && getEntryWorkflowStatus(entry.id) === _statusFilter,
+      );
     }
 
     const groups = groupEntries(entries, collection, _currentView.group);

@@ -14,16 +14,12 @@
   import { viewFilters } from '$lib/services/contents/collection/view/filter';
   import { viewGroups } from '$lib/services/contents/collection/view/group';
   import { sortKeys } from '$lib/services/contents/collection/view/sort-keys';
-  import { workflowEnabled, workflowStatuses } from '$lib/services/contents/workflow';
+  import { activeStatusFilter, workflowEnabled } from '$lib/services/contents/workflow';
   import { isMediumScreen, isSmallScreen } from '$lib/services/user/env';
-  import { writable } from 'svelte/store';
 
   /**
    * @import { InternalEntryCollection } from '$lib/types/private';
    */
-
-  /** @type {import('svelte/store').Writable<string>} */
-  const activeStatusFilter = writable('all');
 
   const entryCollection = $derived(
     $selectedCollection?._type === 'entry'
@@ -35,18 +31,13 @@
   const hasListedEntries = $derived(!!$listedEntries.length);
   const hasMultipleEntries = $derived($listedEntries.length > 1);
 
-  const statusFilters = ['all', 'ready', 'draft', 'in_review'];
-
-  /**
-   * Get the display label for a status filter.
-   * @param {string} status Status key.
-   * @returns {string} Display label.
-   */
-  const getStatusLabel = (status) => {
-    const labels = { all: 'All', ready: 'Published', draft: 'Drafts', in_review: 'In Review' };
-
-    return labels[status] ?? status;
-  };
+  /** @type {{ key: string, i18nKey: string }[]} */
+  const statusFilters = [
+    { key: 'all', i18nKey: 'all' },
+    { key: 'ready', i18nKey: 'status.ready' },
+    { key: 'draft', i18nKey: 'status.drafts' },
+    { key: 'in_review', i18nKey: 'status.in_review' },
+  ];
 </script>
 
 {#if entryCollection}
@@ -59,13 +50,13 @@
     {/if}
     {#if $workflowEnabled}
       <div role="none" class="status-pills">
-        {#each statusFilters as status}
+        {#each statusFilters as { key, i18nKey }}
           <button
             class="status-pill"
-            class:active={$activeStatusFilter === status}
-            onclick={() => activeStatusFilter.set(status)}
+            class:active={$activeStatusFilter === key}
+            onclick={() => activeStatusFilter.set(key)}
           >
-            {getStatusLabel(status)}
+            {$_(i18nKey)}
           </button>
         {/each}
       </div>
