@@ -107,11 +107,11 @@
 
         // Section labels in sidebar (Collections, Quick Access)
         .sui.option-group-label {
-          padding: 10px 20px 8px;
-          font-size: var(--sui-font-size-x-small);
+          padding: 12px 20px 8px;
+          font-size: 10px;
           font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 0.8px;
           color: var(--enterprise-nav-section-label);
 
           @media (width < 768px) {
@@ -135,6 +135,7 @@
             width: 100%;
             text-align: start;
             color: var(--enterprise-nav-text);
+            transition: background-color 150ms ease, color 150ms ease;
 
             @media (width < 768px) {
               color: var(--sui-primary-foreground-color);
@@ -191,6 +192,18 @@
           [role='option'][aria-selected='true'] {
             color: var(--enterprise-nav-active-text);
             background-color: var(--enterprise-nav-active-bg);
+            position: relative;
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 4px;
+              bottom: 4px;
+              width: 3px;
+              border-radius: 0 3px 3px 0;
+              background-color: var(--sui-primary-accent-color);
+            }
 
             @media (width < 768px) {
               color: var(--sui-highlight-foreground-color);
@@ -272,8 +285,32 @@
               }
             }
 
+            [role='option'] button {
+              transition: background-color 150ms ease;
+
+              &:hover {
+                background-color: var(--enterprise-nav-border);
+              }
+            }
+
+            [role='option'][aria-selected='true'] {
+              position: relative;
+
+              &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 6px;
+                bottom: 6px;
+                width: 3px;
+                border-radius: 0 3px 3px 0;
+                background-color: var(--sui-primary-accent-color);
+              }
+            }
+
             [role='option'][aria-selected='true'] button .icon:not(.check) {
               opacity: 1;
+              color: var(--sui-primary-accent-color);
             }
           }
         }
@@ -290,33 +327,34 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 40px;
+    width: 18px;
+    height: 36px;
     border: 1px solid var(--enterprise-nav-border);
     border-radius: 0 6px 6px 0;
     background-color: var(--enterprise-nav-bg-secondary);
     color: var(--enterprise-nav-text);
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.2s ease, left 0.25s ease, background-color 0.2s ease;
+    transition: opacity 0.2s ease, left 0.25s ease, background-color 0.15s ease;
 
     .sidebar-collapsed & {
       left: 56px;
-      border-radius: 0 6px 6px 0;
     }
 
     .outer:hover & {
-      opacity: 1;
+      opacity: 0.7;
     }
 
     &:hover {
-      background-color: var(--enterprise-nav-bg);
-      color: var(--enterprise-nav-active);
+      opacity: 1 !important;
+      background-color: var(--sui-primary-accent-color);
+      border-color: var(--sui-primary-accent-color);
+      color: white;
     }
 
     .toggle-icon {
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
       line-height: 1;
     }
 
