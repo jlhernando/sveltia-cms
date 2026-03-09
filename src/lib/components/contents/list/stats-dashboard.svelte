@@ -42,7 +42,7 @@
 </script>
 
 {#if $workflowEnabled && totalCount > 0}
-  <div role="none" class="stats-dashboard">
+  <div role="region" aria-label={$_('entries')} class="stats-dashboard">
     {#each cards as card}
       <div class="stat-card {card.cssClass}">
         <div class="stat-icon">
@@ -87,10 +87,7 @@
     box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
     transition: transform 200ms ease, box-shadow 200ms ease;
 
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
-    }
+    /* No hover effect — cards are informational, not interactive */
   }
 
   .stat-icon {
