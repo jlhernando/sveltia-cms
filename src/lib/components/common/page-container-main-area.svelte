@@ -50,9 +50,28 @@
     :global {
       .sui.toolbar.primary {
         justify-content: center;
+        background-color: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-bottom: 1px solid var(--glass-border);
 
         @media (width < 768px) {
           background-color: var(--sui-secondary-background-color);
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+      }
+
+      .sui.toolbar.secondary {
+        background-color: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--glass-border);
+
+        @media (width < 768px) {
+          background-color: var(--sui-secondary-background-color);
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
         }
       }
     }
@@ -76,7 +95,10 @@
         overflow: auto;
         box-sizing: content-box;
         width: 320px;
-        background-color: var(--sui-secondary-background-color);
+        background-color: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-inline-start: 1px solid var(--glass-border);
 
         @media (768px <= width) {
           border-start-start-radius: 16px;
