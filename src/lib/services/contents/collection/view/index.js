@@ -11,8 +11,8 @@ import { groupEntries } from '$lib/services/contents/collection/view/group';
 import { sortEntries } from '$lib/services/contents/collection/view/sort';
 import {
   activeStatusFilter,
-  getEntryWorkflowStatus,
   workflowEnabled,
+  workflowStatuses,
 } from '$lib/services/contents/workflow';
 import { prefs } from '$lib/services/user/prefs';
 
@@ -98,11 +98,17 @@ let cacheKey = '';
  * @type {Readable<{ name: string, entries: Entry[] }[]>}
  */
 export const entryGroups = derived(
-  // Include `appLocale` as a dependency because `sortEntries()` and `groupEntries()` may return
-  // localized labels. Include `activeStatusFilter` and `workflowEnabled` for workflow filtering.
-  [listedEntries, currentView, appLocale, activeStatusFilter, workflowEnabled],
-  ([_listedEntries, _currentView, , _statusFilter, _workflowEnabled], set) => {
-    const newCacheKey = JSON.stringify({ _listedEntries, _currentView, _statusFilter });
+  // Include `appLocale` for localized labels, `activeStatusFilter`/`workflowEnabled`/
+  // `workflowStatuses` for reactive workflow filtering.
+  [listedEntries, currentView, appLocale, activeStatusFilter, workflowEnabled, workflowStatuses],
+  ([_listedEntries, _currentView, , _statusFilter, _workflowEnabled, _statuses], set) => {
+    const newCacheKey = JSON.stringify({
+      _listedEntries,
+      _currentView,
+      _statusFilter,
+      _workflowEnabled,
+      _statuses: [...(_statuses?.entries?.() ?? [])],
+    });
 
     if (newCacheKey === cacheKey) {
       return;
@@ -131,7 +137,7 @@ export const entryGroups = derived(
     // Apply workflow status filter from toolbar pills
     if (_workflowEnabled && _statusFilter !== 'all') {
       entries = entries.filter(
-        (entry) => entry.id && getEntryWorkflowStatus(entry.id) === _statusFilter,
+        (entry) => entry.id && (_statuses?.get?.(entry.id) ?? 'draft') === _statusFilter,
       );
     }
 
@@ -153,6 +159,9 @@ listedEntries.subscribe((entries) => {
 });
 
 selectedCollection.subscribe((collection) => {
+  // Reset workflow status filter when switching collections
+  activeStatusFilter.set('all');
+
   if (collection && get(prefs).devModeEnabled) {
     // eslint-disable-next-line no-console
     console.info('selectedCollection', collection);

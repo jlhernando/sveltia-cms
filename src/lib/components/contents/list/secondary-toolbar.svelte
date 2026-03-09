@@ -54,6 +54,7 @@
           <button
             class="status-pill"
             class:active={$activeStatusFilter === key}
+            aria-pressed={$activeStatusFilter === key}
             onclick={() => activeStatusFilter.set(key)}
           >
             {$_(i18nKey)}
