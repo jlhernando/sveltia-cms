@@ -50,6 +50,7 @@
       & > .sui.toolbar {
         --toolbar-background-color: var(--enterprise-nav-bg);
         color: var(--enterprise-nav-text);
+        border-bottom: 1px solid var(--enterprise-nav-border);
 
         @media (width < 768px) {
           padding: 0 4px;

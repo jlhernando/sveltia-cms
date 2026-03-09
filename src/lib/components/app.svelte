@@ -133,48 +133,53 @@
 </AppShell>
 
 <style lang="scss">
-  // Design 5: Refined Enterprise — Global theme overrides
+  // Spectrum Premium theme — Adobe Spectrum 2 inspired with glassmorphism accents
   :global {
     :root,
     :host {
-      // Shift base hue to indigo (from 210 blue to 239 indigo)
-      --sui-base-hue: 239;
+      // Base hue: Spectrum Blue (213)
+      --sui-base-hue: 213;
 
-      // Font: Inter instead of Merriweather Sans
+      // Font: Inter — clean, modern, matches Spectrum's professional feel
       --sui-font-family-default: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --sui-font-weight-normal: 400;
       --sui-font-weight-bold: 600;
 
-      // Override accent colors to match Design 5 indigo (#4f46e5)
+      // Rounded corners — Spectrum-style soft border-radius
+      --sui-control-medium-border-radius: 6px;
+      --sui-control-large-border-radius: 8px;
+      --sui-button-medium-border-radius: 6px;
+
+      // Accent colors: Spectrum Blue-500 (#2680eb)
       &[data-theme='light'] {
-        --sui-primary-accent-color-text: hsl(243 76% 54%);
-        --sui-primary-accent-color-light: hsl(243 76% 58%);
-        --sui-primary-accent-color: hsl(243 76% 58%);
-        --sui-primary-accent-color-dark: hsl(243 76% 50%);
-        --sui-primary-accent-color-translucent: hsl(243 76% 58% / 30%);
+        --sui-primary-accent-color-text: hsl(211 84% 50%);
+        --sui-primary-accent-color-light: hsl(211 84% 55%);
+        --sui-primary-accent-color: hsl(211 84% 54%);
+        --sui-primary-accent-color-dark: hsl(211 84% 46%);
+        --sui-primary-accent-color-translucent: hsl(211 84% 54% / 12%);
       }
 
       &[data-theme='dark'] {
-        --sui-primary-accent-color-text: hsl(243 80% 68%);
-        --sui-primary-accent-color-light: hsl(243 80% 58%);
-        --sui-primary-accent-color: hsl(243 80% 54%);
-        --sui-primary-accent-color-dark: hsl(243 80% 48%);
-        --sui-primary-accent-color-translucent: hsl(243 80% 58% / 35%);
+        --sui-primary-accent-color-text: hsl(211 90% 68%);
+        --sui-primary-accent-color-light: hsl(211 90% 60%);
+        --sui-primary-accent-color: hsl(211 90% 56%);
+        --sui-primary-accent-color-dark: hsl(211 90% 48%);
+        --sui-primary-accent-color-translucent: hsl(211 90% 56% / 18%);
       }
 
-      // Custom variables for dark sidebar/toolbar
-      --enterprise-nav-bg: #0f172a;
-      --enterprise-nav-bg-secondary: #1e293b;
-      --enterprise-nav-text: #94a3b8;
-      --enterprise-nav-text-hover: #cbd5e1;
-      --enterprise-nav-active: #e2e8f0;
-      --enterprise-nav-active-bg: hsl(243 76% 58% / 15%);
-      --enterprise-nav-active-text: #a5b4fc;
-      --enterprise-nav-active-count: #818cf8;
-      --enterprise-nav-border: rgb(255 255 255 / 6%);
-      --enterprise-nav-section-label: #475569;
+      // Sidebar & toolbar: Dark gray (Spectrum dark theme)
+      --enterprise-nav-bg: #1e1e1e;
+      --enterprise-nav-bg-secondary: #2c2c2c;
+      --enterprise-nav-text: #b3b3b3;
+      --enterprise-nav-text-hover: #e1e1e1;
+      --enterprise-nav-active: #f5f5f5;
+      --enterprise-nav-active-bg: hsl(211 84% 54% / 12%);
+      --enterprise-nav-active-text: #5eb0ef;
+      --enterprise-nav-active-count: #2680eb;
+      --enterprise-nav-border: rgb(255 255 255 / 8%);
+      --enterprise-nav-section-label: #6e6e6e;
       --enterprise-search-bg: rgb(255 255 255 / 8%);
-      --enterprise-search-border: rgb(255 255 255 / 10%);
+      --enterprise-search-border: rgb(255 255 255 / 12%);
     }
   }
 

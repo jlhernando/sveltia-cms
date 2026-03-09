@@ -107,12 +107,16 @@
 
         &[tabindex] {
           border-radius: var(--sui-control-large-border-radius);
+          border: 1px solid var(--sui-secondary-border-color);
           background-color: var(--sui-secondary-background-color);
+          box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
           cursor: pointer;
-          transition: background-color 200ms;
+          transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 
           &:is(:hover, :focus, :active) {
-            background-color: var(--sui-hover-background-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+            border-color: var(--sui-primary-accent-color-translucent);
           }
         }
       }

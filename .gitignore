@@ -12,3 +12,7 @@ node_modules
 
 # Debug screenshots
 *.png
+
+# Dev config (not needed for production build)
+/admin/
+.playwright-mcp/

@@ -35,6 +35,12 @@ export const hasOverlay = derived(
 );
 
 /**
+ * Whether the primary sidebar is collapsed (icon-rail mode).
+ * @type {Writable<boolean>}
+ */
+export const sidebarCollapsed = writable(false);
+
+/**
  * @type {Writable<string>}
  */
 export const selectedPageName = writable('');
