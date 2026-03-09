@@ -369,11 +369,11 @@
     display: flex;
     flex-direction: column;
     background-color: var(--sui-secondary-background-color);
+    background-image: var(--glass-gradient-bg);
 
     :global {
       .sui.resizable-pane-group {
-        background-color: var(--sui-secondary-background-color); // same as toolbar
-      }
+        background-color: var(--glass-border);
 
       .sui.resizable-pane {
         background-color: var(--sui-primary-background-color);

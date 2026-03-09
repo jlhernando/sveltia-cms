@@ -432,10 +432,11 @@
   .workflow-status {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: var(--sui-font-size-small);
-    font-weight: 500;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     white-space: nowrap;
 
     &[data-status='draft'] {

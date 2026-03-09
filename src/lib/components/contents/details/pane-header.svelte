@@ -224,7 +224,11 @@
 
         h3 {
           margin: 0 8px;
-          font-size: var(--sui-font-size-default);
+          font-size: var(--sui-font-size-small);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: var(--sui-secondary-foreground-color);
         }
       }
     }
