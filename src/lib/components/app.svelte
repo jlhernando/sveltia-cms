@@ -167,6 +167,24 @@
         --sui-primary-accent-color-translucent: hsl(211 90% 56% / 18%);
       }
 
+      // Glassmorphism design tokens
+      &[data-theme='light'] {
+        --glass-bg: rgb(255 255 255 / 72%);
+        --glass-bg-light: rgb(255 255 255 / 55%);
+        --glass-border: rgb(255 255 255 / 25%);
+        --glass-shadow: 0 8px 32px rgb(31 38 135 / 8%);
+      }
+
+      &[data-theme='dark'] {
+        --glass-bg: rgb(30 30 30 / 72%);
+        --glass-bg-light: rgb(30 30 30 / 55%);
+        --glass-border: rgb(255 255 255 / 8%);
+        --glass-shadow: 0 8px 32px rgb(0 0 0 / 24%);
+      }
+
+      --glass-blur: blur(20px);
+      --glass-blur-heavy: blur(40px);
+
       // Sidebar & toolbar: Dark gray (Spectrum dark theme)
       --enterprise-nav-bg: #1e1e1e;
       --enterprise-nav-bg-secondary: #2c2c2c;

@@ -82,12 +82,11 @@
     gap: 12px;
     padding: 16px;
     border-radius: 12px;
-    border: 1px solid var(--sui-secondary-border-color);
-    background-color: var(--sui-secondary-background-color);
-    box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
-    transition: transform 200ms ease, box-shadow 200ms ease;
-
-    /* No hover effect — cards are informational, not interactive */
+    border: 1px solid var(--glass-border);
+    background-color: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
   }
 
   .stat-icon {
