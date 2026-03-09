@@ -150,13 +150,25 @@
       --sui-control-large-border-radius: 8px;
       --sui-button-medium-border-radius: 6px;
 
-      // Accent colors: Spectrum Blue-500 (#2680eb)
+      // Accent colors + glassmorphism tokens: Spectrum Blue-500 (#2680eb)
       &[data-theme='light'] {
         --sui-primary-accent-color-text: hsl(211 84% 50%);
         --sui-primary-accent-color-light: hsl(211 84% 55%);
         --sui-primary-accent-color: hsl(211 84% 54%);
         --sui-primary-accent-color-dark: hsl(211 84% 46%);
         --sui-primary-accent-color-translucent: hsl(211 84% 54% / 12%);
+
+        // Glass tokens (light)
+        --glass-bg: rgb(255 255 255 / 72%);
+        --glass-bg-light: rgb(255 255 255 / 55%);
+        --glass-border: rgb(0 0 0 / 8%);
+        --glass-shadow: 0 8px 32px rgb(31 38 135 / 8%);
+        --glass-gradient-bg: radial-gradient(
+            ellipse at 20% 0%,
+            hsl(211 60% 90% / 40%) 0%,
+            transparent 50%
+          ),
+          radial-gradient(ellipse at 80% 100%, hsl(260 60% 90% / 30%) 0%, transparent 50%);
       }
 
       &[data-theme='dark'] {
@@ -165,25 +177,21 @@
         --sui-primary-accent-color: hsl(211 90% 56%);
         --sui-primary-accent-color-dark: hsl(211 90% 48%);
         --sui-primary-accent-color-translucent: hsl(211 90% 56% / 18%);
-      }
 
-      // Glassmorphism design tokens
-      &[data-theme='light'] {
-        --glass-bg: rgb(255 255 255 / 72%);
-        --glass-bg-light: rgb(255 255 255 / 55%);
-        --glass-border: rgb(255 255 255 / 25%);
-        --glass-shadow: 0 8px 32px rgb(31 38 135 / 8%);
-      }
-
-      &[data-theme='dark'] {
+        // Glass tokens (dark)
         --glass-bg: rgb(30 30 30 / 72%);
         --glass-bg-light: rgb(30 30 30 / 55%);
         --glass-border: rgb(255 255 255 / 8%);
         --glass-shadow: 0 8px 32px rgb(0 0 0 / 24%);
+        --glass-gradient-bg: radial-gradient(
+            ellipse at 20% 0%,
+            hsl(211 60% 20% / 20%) 0%,
+            transparent 50%
+          ),
+          radial-gradient(ellipse at 80% 100%, hsl(260 60% 20% / 15%) 0%, transparent 50%);
       }
 
       --glass-blur: blur(20px);
-      --glass-blur-heavy: blur(40px);
 
       // Sidebar & toolbar: Dark gray (Spectrum dark theme)
       --enterprise-nav-bg: #1e1e1e;

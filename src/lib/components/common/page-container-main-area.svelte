@@ -41,12 +41,7 @@
     flex-direction: column;
     overflow: hidden;
     background-color: var(--sui-primary-background-color);
-    background-image: radial-gradient(
-        ellipse at 20% 0%,
-        hsl(211 60% 90% / 40%) 0%,
-        transparent 50%
-      ),
-      radial-gradient(ellipse at 80% 100%, hsl(260 60% 90% / 30%) 0%, transparent 50%);
+    background-image: var(--glass-gradient-bg);
 
     &:not(:first-child) {
       border-start-start-radius: 16px;
