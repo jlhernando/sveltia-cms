@@ -186,6 +186,16 @@ export default defineConfig({
     chunkSizeWarningLimit: 5000,
     sourcemap: true,
     rollupOptions: {
+      // Suppress harmless warning about dynamic imports that won't be code-split.
+      // The workflow module uses dynamic import() to break circular dependencies with
+      // config and contents modules — safe in a single-bundle build.
+      onwarn(warning, warn) {
+        if (warning.message?.includes('dynamic import will not move module into another chunk')) {
+          return;
+        }
+
+        warn(warning);
+      },
       // Output JavaScript only
       input: 'src/lib/main.js',
       output: [
