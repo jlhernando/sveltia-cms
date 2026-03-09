@@ -59,19 +59,21 @@
           background-color: var(--sui-secondary-background-color);
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
+          border-bottom: none;
         }
       }
 
       .sui.toolbar.secondary {
         background-color: var(--glass-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
         border-bottom: 1px solid var(--glass-border);
 
         @media (width < 768px) {
           background-color: var(--sui-secondary-background-color);
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
+          border-bottom: none;
         }
       }
     }
@@ -96,8 +98,8 @@
         box-sizing: content-box;
         width: 320px;
         background-color: var(--glass-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
         border-inline-start: 1px solid var(--glass-border);
 
         @media (768px <= width) {
