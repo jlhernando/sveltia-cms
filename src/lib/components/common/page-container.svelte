@@ -108,7 +108,7 @@
         // Section labels in sidebar (Collections, Quick Access)
         .sui.option-group-label {
           padding: 12px 20px 8px;
-          font-size: 10px;
+          font-size: 0.625rem;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.8px;
@@ -349,7 +349,7 @@
       opacity: 1 !important;
       background-color: var(--sui-primary-accent-color);
       border-color: var(--sui-primary-accent-color);
-      color: white;
+      color: var(--sui-primary-accent-color-inverted);
     }
 
     .toggle-icon {
