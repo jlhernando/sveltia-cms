@@ -194,6 +194,16 @@ export default defineConfig({
           return;
         }
 
+        // IIFE consumers use window.CMS, not the bundle return value, so mixed exports are fine
+        if (warning.code === 'MIXED_EXPORTS') {
+          return;
+        }
+
+        // window.CMS is set explicitly in main.js, so no IIFE output.name needed
+        if (warning.code === 'MISSING_NAME_OPTION_FOR_IIFE_EXPORT') {
+          return;
+        }
+
         warn(warning);
       },
       // Output JavaScript only
