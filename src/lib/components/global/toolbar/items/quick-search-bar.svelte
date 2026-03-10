@@ -17,6 +17,9 @@
     /* eslint-enable prefer-const */
   } = $props();
 
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let navigateTimer;
+
   /**
    * Navigate to the search results page if search terms are given, or go back the previous page.
    * @param {string} terms New search terms.
@@ -29,27 +32,31 @@
     $searchTerms = terms;
 
     if (terms) {
-      goto(`/search/${terms}`, { replaceState: searching });
+      if (searching) {
+        // Already on search page — update URL immediately
+        goto(`/search/${terms}`, { replaceState: true });
+      } else {
+        // Debounce initial navigation to prevent destroying the sidebar search bar mid-typing
+        clearTimeout(navigateTimer);
+        navigateTimer = setTimeout(() => {
+          goto(`/search/${$searchTerms}`);
+        }, 300);
+      }
     } else if (hadTerms && searching) {
+      clearTimeout(navigateTimer);
       goBack('/collections');
     }
   };
 
   /** @type {any | undefined} */
   let searchBar = $state();
-
-  $effect(() => {
-    // Restore search terms when the page is reloaded
-    if (searchBar && $searchTerms !== searchBar?.value) {
-      searchBar.value = $searchTerms;
-    }
-  });
 </script>
 
 <div role="none" class="wrapper">
   {#if $searchMode}
     <SearchBar
       bind:this={searchBar}
+      value={$searchTerms ?? ''}
       keyShortcuts="Accel+F"
       placeholder={$_(`search_placeholder_${$searchMode}`)}
       --sui-textbox-placeholder-text-align="center"
