@@ -45,8 +45,8 @@
   {#snippet main()}
     <PageContainerMainArea>
       {#snippet primaryToolbar()}
-        {#if $isSmallScreen}
-          <Toolbar variant="primary">
+        <Toolbar variant="primary">
+          {#if $isSmallScreen}
             <BackButton
               aria-label={$_(
                 $searchMode === 'assets' ? 'back_to_asset_folder_list' : 'back_to_collection_list',
@@ -58,11 +58,11 @@
                 });
               }}
             />
-            <div role="search">
-              <QuickSearchBar />
-            </div>
-          </Toolbar>
-        {/if}
+          {/if}
+          <div role="search">
+            <QuickSearchBar />
+          </div>
+        </Toolbar>
       {/snippet}
       {#snippet mainContent()}
         <SearchResults />
