@@ -374,6 +374,7 @@
     :global {
       .sui.resizable-pane-group {
         background-color: var(--glass-border);
+      }
 
       .sui.resizable-pane {
         background-color: var(--sui-primary-background-color);
