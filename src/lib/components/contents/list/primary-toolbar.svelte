@@ -2,6 +2,7 @@
   import {
     Button,
     FloatingActionButtonWrapper,
+    Icon,
     Infobar,
     Spacer,
     Toolbar,
@@ -14,7 +15,7 @@
   import BackButton from '$lib/components/common/page-toolbar/back-button.svelte';
   import DeleteEntriesDialog from '$lib/components/contents/shared/delete-entries-dialog.svelte';
   import CreateEntryButton from '$lib/components/contents/toolbar/create-entry-button.svelte';
-  import { goBack } from '$lib/services/app/navigation';
+  import { goBack, goto } from '$lib/services/app/navigation';
   import { getCollectionLabel, selectedCollection } from '$lib/services/contents/collection';
   import { selectedEntries } from '$lib/services/contents/collection/entries';
   import { collectionState, listedEntries } from '$lib/services/contents/collection/view';
@@ -60,16 +61,27 @@
         }}
       />
     {/if}
-    <h2 role="none">
-      {collectionLabel}
-      {#if $listedEntries.length}
-        <span class="entry-count">
-          {$listedEntries.length === 1
-            ? $_('one_entry')
-            : $_('many_entries', { values: { count: $listedEntries.length } })}
-        </span>
-      {/if}
-    </h2>
+    {#if !$isSmallScreen}
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <button
+          class="breadcrumb-link"
+          onclick={() => { goto('/collections', { transitionType: 'backwards' }); }}
+        >
+          {$_('collections')}
+        </button>
+        <Icon name="chevron_right" class="breadcrumb-sep" />
+        <h2 role="none">{collectionLabel}</h2>
+        {#if $listedEntries.length}
+          <span class="entry-count">
+            {$listedEntries.length === 1
+              ? $_('one_entry')
+              : $_('many_entries', { values: { count: $listedEntries.length } })}
+          </span>
+        {/if}
+      </nav>
+    {:else}
+      <h2 role="none">{collectionLabel}</h2>
+    {/if}
     {#if $isSmallScreen}
       <Spacer flex />
     {:else}
@@ -128,6 +140,31 @@
 <style lang="scss">
   h2 {
     flex: none !important;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: none;
+
+    :global(.icon.breadcrumb-sep) {
+      font-size: 18px;
+      opacity: 0.35;
+    }
+  }
+
+  .breadcrumb-link {
+    all: unset;
+    cursor: pointer;
+    font-size: var(--sui-font-size-small);
+    color: var(--sui-secondary-foreground-color);
+    letter-spacing: 0.2px;
+    transition: color 150ms;
+
+    &:hover {
+      color: var(--sui-primary-accent-color);
+    }
   }
 
   .entry-count {
