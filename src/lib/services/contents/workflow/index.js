@@ -288,10 +288,15 @@ export const entriesByWorkflowStatus = derived(
  * Merges with any existing in-memory statuses to avoid overwriting unsaved transitions.
  * @param {Entry[]} entries All entries.
  */
-export const initWorkflowStatuses = (entries) => {
+export const initWorkflowStatuses = async (entries) => {
   connectStores();
 
-  if (!get(workflowEnabled)) {
+  // Check config directly to avoid race condition with lazy configProxy.
+  // By the time this is called (after fetch), cmsConfig is already populated.
+  const { cmsConfig } = await import('$lib/services/config');
+  const config = get(cmsConfig);
+
+  if (config?.publish_mode !== 'editorial_workflow') {
     return;
   }
 
