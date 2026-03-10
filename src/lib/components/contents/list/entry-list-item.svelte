@@ -12,7 +12,7 @@
   import { listedEntries } from '$lib/services/contents/collection/view';
   import { getEntryThumbnail } from '$lib/services/contents/entry/assets';
   import { getEntrySummary } from '$lib/services/contents/entry/summary';
-  import { DATE_FORMAT_OPTIONS } from '$lib/services/utils/date';
+  import { DATE_FORMAT_OPTIONS, DATE_REGEX } from '$lib/services/utils/date';
   import { workflowStatuses } from '$lib/services/contents/workflow';
   import { isMediumScreen, isSmallScreen } from '$lib/services/user/env';
 
@@ -55,6 +55,11 @@
   /** Status i18n key map. */
   const STATUS_I18N_KEYS = { draft: 'status.drafts', in_review: 'status.in_review', ready: 'status.ready' };
 
+  /** Common field names for category-like metadata. */
+  const CATEGORY_FIELDS = ['category', 'categories', 'type', 'section', 'tag', 'tags'];
+  /** Common field names for date metadata. */
+  const DATE_FIELDS = ['date', 'publish_date', 'publishDate', 'created', 'created_at', 'createdAt'];
+
   /**
    * @typedef {object} Props
    * @property {InternalEntryCollection} collection Selected collection.
@@ -75,11 +80,6 @@
   const collectionIcon = $derived(collection.icon || 'bookmark_manager');
   const localeKeys = $derived(Object.keys(entry.locales));
   const workflowStatus = $derived($workflowStatuses?.get?.(entry.id) ?? 'draft');
-
-  /** Common field names for category-like metadata. */
-  const CATEGORY_FIELDS = ['category', 'categories', 'type', 'section', 'tag', 'tags'];
-  /** Common field names for date metadata. */
-  const DATE_FIELDS = ['date', 'publish_date', 'publishDate', 'created', 'created_at', 'createdAt'];
 
   /**
    * Get entry content for the default locale.
@@ -108,7 +108,16 @@
       const val = content[field];
 
       if (typeof val === 'string' && val.trim()) return val.trim();
-      if (Array.isArray(val) && val.length) return String(val[0]);
+
+      if (Array.isArray(val) && val.length) {
+        const first = val[0];
+
+        if (typeof first === 'object' && first !== null) {
+          return first.name || first.label || first.title || undefined;
+        }
+
+        return String(first);
+      }
     }
 
     return undefined;
@@ -128,7 +137,10 @@
         const val = content[field];
 
         if (val) {
-          const d = new Date(val);
+          // For date-only strings (e.g. "2024-01-15"), append T00:00:00 to force
+          // local-time parsing and avoid timezone-shifted display in negative-offset zones.
+          const dateStr = typeof val === 'string' && DATE_REGEX.test(val) ? `${val}T00:00:00` : val;
+          const d = new Date(dateStr);
 
           if (!Number.isNaN(d.getTime())) return d;
         }
@@ -343,6 +355,10 @@
   .meta-category {
     font-weight: 500;
     text-transform: capitalize;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
   }
 
   .meta-sep {
