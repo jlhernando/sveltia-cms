@@ -3,6 +3,7 @@ import { derived } from 'svelte/store';
 
 import SveltiaLogo from '$lib/assets/sveltia-logo.svg?raw&inline';
 import { cmsConfig } from '$lib/services/config';
+import { prefs } from '$lib/services/user/prefs';
 
 /**
  * @import { Readable } from 'svelte/store';
@@ -26,13 +27,16 @@ export const DEFAULT_APP_LOGO_URL = `data:image/svg+xml;base64,${btoa(SveltiaLog
 export const appTitle = derived([cmsConfig], ([config]) => config?.app_title || DEFAULT_APP_TITLE);
 
 /**
- * The app logo URL, derived from the CMS configuration. It checks both `logo.src` and the
- * deprecated `logo_url` for backward compatibility.
+ * The app logo URL, derived from user preferences and CMS configuration. Priority:
+ * 1. User preference `customLogoURL` (set via Settings > Appearance)
+ * 2. CMS config `logo.src` or deprecated `logo_url`
+ * 3. Default Sveltia logo
  * @type {Readable<string>}
  */
 export const appLogoURL = derived(
-  [cmsConfig],
-  ([config]) => config?.logo?.src || config?.logo_url || DEFAULT_APP_LOGO_URL,
+  [prefs, cmsConfig],
+  ([_prefs, config]) =>
+    _prefs?.customLogoURL || config?.logo?.src || config?.logo_url || DEFAULT_APP_LOGO_URL,
 );
 
 /**

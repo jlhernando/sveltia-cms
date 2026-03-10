@@ -810,6 +810,10 @@ export const strings = {
       title: 'Appearance',
       theme: 'Theme',
       select_theme: 'Select Theme',
+      sidebar_logo: 'Sidebar Logo',
+      sidebar_logo_description: 'Custom logo URL for the sidebar. Leave empty to use the default.',
+      logo_url_placeholder: 'https://example.com/logo.png',
+      reset_logo: 'Reset to Default',
     },
     theme: {
       auto: 'Auto',

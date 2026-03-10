@@ -2,12 +2,17 @@
   import { Button } from '@sveltia/ui';
   import { _ } from 'svelte-i18n';
 
-  import { appLogoURL, DEFAULT_APP_LOGO_URL } from '$lib/services/app/branding';
+  import { appLogoURL } from '$lib/services/app/branding';
   import { openProductionSite } from '$lib/services/app/navigation';
   import { cmsConfig } from '$lib/services/config';
+
+  const hasConfigLogo = $derived(
+    !!($cmsConfig?.logo?.src || $cmsConfig?.logo_url) &&
+      ($cmsConfig?.logo?.show_in_header ?? true),
+  );
 </script>
 
-{#if $appLogoURL !== DEFAULT_APP_LOGO_URL && ($cmsConfig?.logo?.show_in_header ?? true)}
+{#if hasConfigLogo}
   <Button
     variant="ghost"
     iconic
@@ -18,6 +23,8 @@
   >
     <img src={$appLogoURL} alt="" class="logo" />
   </Button>
+{:else}
+  <img src={$appLogoURL} alt="" class="logo" />
 {/if}
 
 <style lang="scss">

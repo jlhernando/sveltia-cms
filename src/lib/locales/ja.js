@@ -818,6 +818,10 @@ export const strings = {
       title: 'アピアランス',
       theme: 'テーマ',
       select_theme: 'テーマを選択',
+      sidebar_logo: 'サイドバーロゴ',
+      sidebar_logo_description: 'サイドバーのカスタムロゴURL。空欄の場合はデフォルトが使用されます。',
+      logo_url_placeholder: 'https://example.com/logo.png',
+      reset_logo: 'デフォルトに戻す',
     },
     theme: {
       auto: '自動',

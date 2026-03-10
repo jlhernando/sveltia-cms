@@ -89,6 +89,8 @@
  * @property {string} [deployHookAuthHeader] Webhook `Authorization` request header value, including
  * the scheme and token, e.g. `Bearer <token>`.
  * @property {string} [defaultTranslationService] Default translation service ID, e.g. `google`.
+ * @property {string} [customLogoURL] Custom logo URL for the sidebar rail, overriding the config
+ * logo.
  */
 
 /**

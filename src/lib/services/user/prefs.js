@@ -33,6 +33,7 @@ export const prefs = writable({}, (set) => {
       _prefs.beta ??= false;
       _prefs.devModeEnabled ??= false;
       _prefs.defaultTranslationService ??= 'google';
+      _prefs.customLogoURL ??= '';
       set(_prefs);
     } catch {
       prefsError.set({ type: 'permission_denied' });
