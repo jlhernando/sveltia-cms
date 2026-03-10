@@ -1,6 +1,5 @@
 <script>
-  import { Button, Icon } from '@sveltia/ui';
-  import { hasOverlay, sidebarCollapsed } from '$lib/services/app/navigation';
+  import { hasOverlay } from '$lib/services/app/navigation';
   import { isSmallScreen } from '$lib/services/user/env';
 
   /**
@@ -29,20 +28,10 @@
   role="group"
   id="page-container"
   class="outer {className}"
-  class:sidebar-collapsed={$sidebarCollapsed}
   inert={$hasOverlay}
   {...rest}
 >
   {@render primarySidebar?.()}
-  {#if !$isSmallScreen}
-    <button
-      class="sidebar-toggle"
-      aria-label={$sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      onclick={() => sidebarCollapsed.update((v) => !v)}
-    >
-      <span class="toggle-icon">{$sidebarCollapsed ? '\u203A' : '\u2039'}</span>
-    </button>
-  {/if}
   {@render main?.()}
 </div>
 
@@ -62,12 +51,11 @@
         display: flex;
         flex-direction: column;
         flex: none;
-        width: 250px;
+        width: 240px;
         overflow-y: auto;
         overflow-x: hidden;
-        background-color: var(--enterprise-nav-bg);
-        color: var(--enterprise-nav-text);
-        border-right: 1px solid var(--enterprise-nav-border);
+        background-color: var(--sui-secondary-background-color);
+        border-right: 1px solid var(--sui-secondary-border-color);
         transition: width 0.25s ease;
 
         @media (width < 768px) {
@@ -94,9 +82,6 @@
 
         .sui.search-bar {
           margin-inline: 12px;
-          --sui-textbox-background-color: var(--enterprise-search-bg);
-          --sui-textbox-border-color: var(--enterprise-search-border);
-          --sui-textbox-foreground-color: var(--enterprise-nav-active);
 
           @media (width < 768px) {
             --sui-textbox-background-color: var(--sui-tertiary-background-color);
@@ -105,18 +90,14 @@
           }
         }
 
-        // Section labels in sidebar (Collections, Quick Access)
+        // Section labels in sidebar (Collections, Files)
         .sui.option-group-label {
           padding: 12px 20px 8px;
-          font-size: 0.625rem;
+          font-size: 0.6875rem;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.8px;
-          color: var(--enterprise-nav-section-label);
-
-          @media (width < 768px) {
-            color: var(--sui-tertiary-foreground-color);
-          }
+          color: var(--sui-tertiary-foreground-color);
         }
 
         [role='radiogroup'] {
@@ -134,15 +115,11 @@
             border-radius: var(--sui-control-medium-border-radius);
             width: 100%;
             text-align: start;
-            color: var(--enterprise-nav-text);
+            color: var(--sui-primary-foreground-color);
             transition: background-color 150ms ease, color 150ms ease;
 
-            @media (width < 768px) {
-              color: var(--sui-primary-foreground-color);
-            }
-
             &:not(:first-child) {
-              margin-top: 4px;
+              margin-top: 2px;
             }
 
             &:not(:focus) {
@@ -150,13 +127,7 @@
             }
 
             &:hover {
-              background-color: var(--enterprise-nav-border);
-              color: var(--enterprise-nav-text-hover);
-
-              @media (width < 768px) {
-                background-color: var(--sui-hover-background-color);
-                color: var(--sui-primary-foreground-color);
-              }
+              background-color: var(--sui-hover-background-color);
             }
 
             span {
@@ -185,23 +156,17 @@
               height: 20px;
               padding: 0 6px;
               border-radius: 10px;
-              background-color: var(--sui-primary-accent-color-translucent, rgba(59, 130, 246, 0.15));
-              color: var(--sui-primary-accent-color);
+              background-color: var(--sui-tertiary-background-color);
+              color: var(--sui-tertiary-foreground-color);
               font-size: 11px;
-              font-weight: 600;
+              font-weight: 500;
               line-height: 1;
               transition: background-color 200ms, color 200ms;
-
-              @media (width < 768px) {
-                background-color: var(--sui-tertiary-background-color);
-                color: var(--sui-tertiary-foreground-color);
-              }
             }
           }
 
           [role='option'][aria-selected='true'] {
-            color: var(--enterprise-nav-active-text);
-            background-color: var(--enterprise-nav-active-bg);
+            background-color: var(--sui-primary-accent-color-translucent);
             position: relative;
 
             &::before {
@@ -215,23 +180,19 @@
               background-color: var(--sui-primary-accent-color);
             }
 
-            @media (width < 768px) {
-              color: var(--sui-highlight-foreground-color);
-              background-color: var(--sui-selected-background-color);
+            button {
+              color: var(--sui-primary-accent-color);
+              font-weight: 500;
             }
 
             .icon {
               opacity: 0.9;
+              color: var(--sui-primary-accent-color);
             }
 
             .count {
-              background-color: var(--sui-primary-accent-color);
-              color: var(--sui-primary-accent-color-inverted, #fff);
-
-              @media (width < 768px) {
-                background-color: var(--sui-selected-background-color);
-                color: var(--sui-highlighted-foreground-color);
-              }
+              background-color: var(--sui-primary-accent-color-translucent);
+              color: var(--sui-primary-accent-color);
             }
           }
 
@@ -243,135 +204,9 @@
 
         .sui.divider {
           margin: 8px 0;
-          border-color: var(--enterprise-nav-border);
-
-          @media (width < 768px) {
-            border-color: var(--sui-secondary-border-color);
-          }
+          border-color: var(--sui-secondary-border-color);
         }
       }
-    }
-
-    // Collapsed sidebar state
-    &.sidebar-collapsed {
-      :global {
-        .primary-sidebar {
-          width: 56px;
-
-          .sui.search-bar {
-            display: none;
-          }
-
-          // Hide group section labels ("Collections", "Files")
-          .sui.option-group > .label {
-            display: none;
-          }
-
-          .sui.divider {
-            margin: 4px 8px;
-          }
-
-          [role='listbox'] {
-            margin: 4px;
-
-            button {
-              justify-content: center;
-              padding: 8px 0 !important;
-              min-height: 40px;
-              width: 44px !important;
-
-              // Hide text labels and count badges
-              span.label,
-              .label,
-              .count,
-              span:not(.icon) {
-                display: none !important;
-              }
-
-              // Show and center icons
-              .icon:not(.check) {
-                display: flex !important;
-                opacity: 0.7;
-                font-size: 22px;
-                flex: none;
-              }
-            }
-
-            [role='option'] button {
-              transition: background-color 150ms ease;
-
-              &:hover {
-                background-color: var(--enterprise-nav-border);
-              }
-            }
-
-            [role='option'][aria-selected='true'] {
-              position: relative;
-
-              &::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 6px;
-                bottom: 6px;
-                width: 3px;
-                border-radius: 0 3px 3px 0;
-                background-color: var(--sui-primary-accent-color);
-              }
-            }
-
-            [role='option'][aria-selected='true'] button .icon:not(.check) {
-              opacity: 1;
-              color: var(--sui-primary-accent-color);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .sidebar-toggle {
-    position: absolute;
-    top: 50%;
-    left: 250px;
-    z-index: 10;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 36px;
-    border: 1px solid var(--enterprise-nav-border);
-    border-radius: 0 6px 6px 0;
-    background-color: var(--enterprise-nav-bg-secondary);
-    color: var(--enterprise-nav-text);
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease, left 0.25s ease, background-color 0.15s ease;
-
-    .sidebar-collapsed & {
-      left: 56px;
-    }
-
-    .outer:hover & {
-      opacity: 0.7;
-    }
-
-    &:hover {
-      opacity: 1 !important;
-      background-color: var(--sui-primary-accent-color);
-      border-color: var(--sui-primary-accent-color);
-      color: var(--sui-primary-accent-color-inverted);
-    }
-
-    .toggle-icon {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    @media (width < 768px) {
-      display: none;
     }
   }
 </style>

@@ -41,38 +41,23 @@
     flex-direction: column;
     overflow: hidden;
     background-color: var(--sui-primary-background-color);
-    background-image: var(--glass-gradient-bg);
-
-    &:not(:first-child) {
-      border-start-start-radius: 16px;
-    }
 
     :global {
       .sui.toolbar.primary {
         justify-content: center;
-        background-color: var(--glass-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border-bottom: 1px solid var(--glass-border);
+        background-color: var(--sui-secondary-background-color);
+        border-bottom: 1px solid var(--sui-secondary-border-color);
 
         @media (width < 768px) {
-          background-color: var(--sui-secondary-background-color);
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
           border-bottom: none;
         }
       }
 
       .sui.toolbar.secondary {
-        background-color: var(--glass-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border-bottom: 1px solid var(--glass-border);
+        background-color: var(--sui-secondary-background-color);
+        border-bottom: 1px solid var(--sui-secondary-border-color);
 
         @media (width < 768px) {
-          background-color: var(--sui-secondary-background-color);
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
           border-bottom: none;
         }
       }
@@ -97,14 +82,8 @@
         overflow: auto;
         box-sizing: content-box;
         width: 320px;
-        background-color: var(--glass-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border-inline-start: 1px solid var(--glass-border);
-
-        @media (768px <= width) {
-          border-start-start-radius: 16px;
-        }
+        background-color: var(--sui-secondary-background-color);
+        border-inline-start: 1px solid var(--sui-secondary-border-color);
 
         [role='listbox'] {
           padding: 12px;

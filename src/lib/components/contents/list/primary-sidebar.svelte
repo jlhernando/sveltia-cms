@@ -25,13 +25,15 @@
       <h2>{$_('contents')}</h2>
       <PublishButton />
     </header>
-    <QuickSearchBar
-      onclick={(event) => {
-        event.preventDefault();
-        goto('/search');
-      }}
-    />
   {/if}
+  <QuickSearchBar
+    onclick={$isSmallScreen
+      ? (event) => {
+          event.preventDefault();
+          goto('/search');
+        }
+      : undefined}
+  />
   <Listbox aria-label={$_('collection_list')} aria-controls="collection-container">
     {#if collections.length}
       <OptionGroup label={$_('collections')}>

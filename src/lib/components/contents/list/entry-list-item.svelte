@@ -271,10 +271,10 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 140px;
 
     :global(.icon) {
-      font-size: 40px;
+      font-size: 28px;
       color: rgba(0, 0, 0, 0.08);
     }
 
@@ -293,32 +293,42 @@
   .status-badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 11px;
+    gap: 6px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.3px;
-    color: var(--sui-secondary-foreground-color);
     flex-shrink: 0;
   }
 
   .status-dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
+  .status-draft {
+    color: #b45309;
+  }
+
   .status-draft .status-dot {
-    background-color: var(--sui-warning-foreground-color, #f59e0b);
+    background-color: #edcc00;
+  }
+
+  .status-in_review {
+    color: hsl(211 84% 46%);
   }
 
   .status-in_review .status-dot {
-    background-color: var(--sui-primary-accent-color, #3b82f6);
+    background-color: hsl(211 84% 54%);
+  }
+
+  .status-ready {
+    color: #268e6c;
   }
 
   .status-ready .status-dot {
-    background-color: var(--sui-success-foreground-color, #10b981);
+    background-color: #33ab84;
   }
 
   .locale-tags {
@@ -331,14 +341,12 @@
 
   .locale-tag {
     display: inline-block;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 4px;
     background-color: var(--sui-tertiary-background-color);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.5px;
     color: var(--sui-secondary-foreground-color);
-    text-transform: uppercase;
     flex-shrink: 0;
   }
 

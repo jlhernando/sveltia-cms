@@ -83,12 +83,17 @@
 {/if}
 
 {#if !$isSmallScreen}
-  <GlobalToolbar />
+  <div role="none" class="spectrum-shell">
+    <GlobalToolbar />
+    <div role="none" class="page-root">
+      <SelectedPage />
+    </div>
+  </div>
+{:else}
+  <div role="none" class="page-root">
+    <SelectedPage />
+  </div>
 {/if}
-
-<div role="none" class="page-root">
-  <SelectedPage />
-</div>
 
 {#if $isSmallScreen}
   <BottomNavigation />
@@ -100,6 +105,12 @@
 <EntryParseErrorsToast />
 
 <style lang="scss">
+  .spectrum-shell {
+    display: flex;
+    flex: auto;
+    overflow: hidden;
+  }
+
   .page-root {
     position: relative;
     flex: auto;

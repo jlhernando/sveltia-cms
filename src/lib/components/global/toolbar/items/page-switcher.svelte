@@ -98,7 +98,7 @@
       }
 
       .sui.button {
-        border-radius: var(--sui-button-medium-border-radius) !important;
+        border-radius: 6px !important;
       }
     }
   }

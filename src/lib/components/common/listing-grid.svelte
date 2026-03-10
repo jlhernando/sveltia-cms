@@ -64,7 +64,7 @@
 
       .grid-body {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 200px), 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 280px), 1fr));
         gap: 16px;
         border-width: 0;
 
@@ -114,17 +114,16 @@
         }
 
         &[tabindex] {
-          border-radius: var(--sui-control-large-border-radius);
+          border-radius: 8px;
           border: 1px solid var(--sui-secondary-border-color);
           background-color: var(--sui-secondary-background-color);
-          box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
           cursor: pointer;
           transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 
           &:is(:hover, :focus, :active) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-            border-color: var(--sui-primary-accent-color-translucent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
+            border-color: var(--sui-control-border-color);
           }
         }
       }

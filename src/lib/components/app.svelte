@@ -150,25 +150,18 @@
       --sui-control-large-border-radius: 8px;
       --sui-button-medium-border-radius: 6px;
 
-      // Accent colors + glassmorphism tokens: Spectrum Blue-500 (#2680eb)
+      // Accent colors: Spectrum Blue-500 (#2680eb)
       &[data-theme='light'] {
         --sui-primary-accent-color-text: hsl(211 84% 50%);
         --sui-primary-accent-color-light: hsl(211 84% 55%);
         --sui-primary-accent-color: hsl(211 84% 54%);
         --sui-primary-accent-color-dark: hsl(211 84% 46%);
-        --sui-primary-accent-color-translucent: hsl(211 84% 54% / 12%);
-
-        // Glass tokens (light)
-        --glass-bg: rgb(255 255 255 / 72%);
-        --glass-bg-light: rgb(255 255 255 / 55%);
+        --sui-primary-accent-color-translucent: hsl(211 84% 54% / 8%);
+        // Glass tokens (used by entrance, stats, editor overlay)
+        --glass-bg: rgb(255 255 255 / 80%);
         --glass-border: rgb(0 0 0 / 8%);
-        --glass-shadow: 0 8px 32px rgb(31 38 135 / 8%);
-        --glass-gradient-bg: radial-gradient(
-            ellipse at 20% 0%,
-            hsl(211 60% 90% / 40%) 0%,
-            transparent 50%
-          ),
-          radial-gradient(ellipse at 80% 100%, hsl(260 60% 90% / 30%) 0%, transparent 50%);
+        --glass-shadow: 0 4px 16px rgb(0 0 0 / 6%);
+        --glass-gradient-bg: none;
       }
 
       &[data-theme='dark'] {
@@ -177,35 +170,19 @@
         --sui-primary-accent-color: hsl(211 90% 56%);
         --sui-primary-accent-color-dark: hsl(211 90% 48%);
         --sui-primary-accent-color-translucent: hsl(211 90% 56% / 18%);
-
-        // Glass tokens (dark)
-        --glass-bg: rgb(30 30 30 / 72%);
-        --glass-bg-light: rgb(30 30 30 / 55%);
+        --glass-bg: rgb(30 30 30 / 80%);
         --glass-border: rgb(255 255 255 / 8%);
-        --glass-shadow: 0 8px 32px rgb(0 0 0 / 24%);
-        --glass-gradient-bg: radial-gradient(
-            ellipse at 20% 0%,
-            hsl(211 60% 20% / 20%) 0%,
-            transparent 50%
-          ),
-          radial-gradient(ellipse at 80% 100%, hsl(260 60% 20% / 15%) 0%, transparent 50%);
+        --glass-shadow: 0 4px 16px rgb(0 0 0 / 20%);
+        --glass-gradient-bg: none;
       }
 
-      --glass-blur: blur(20px);
+      --glass-blur: blur(16px);
 
-      // Sidebar & toolbar: Dark gray (Spectrum dark theme)
-      --enterprise-nav-bg: #1e1e1e;
-      --enterprise-nav-bg-secondary: #2c2c2c;
+      // Icon rail: Dark background (Spectrum dark theme)
+      --enterprise-nav-bg: #1a1a1a;
       --enterprise-nav-text: #b3b3b3;
-      --enterprise-nav-text-hover: #e1e1e1;
       --enterprise-nav-active: #f5f5f5;
-      --enterprise-nav-active-bg: hsl(211 84% 54% / 12%);
-      --enterprise-nav-active-text: #5eb0ef;
-      --enterprise-nav-active-count: #2680eb;
       --enterprise-nav-border: rgb(255 255 255 / 8%);
-      --enterprise-nav-section-label: #6e6e6e;
-      --enterprise-search-bg: rgb(255 255 255 / 8%);
-      --enterprise-search-border: rgb(255 255 255 / 12%);
     }
   }
 

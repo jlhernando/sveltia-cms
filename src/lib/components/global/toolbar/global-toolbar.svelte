@@ -1,103 +1,146 @@
 <script>
-  import { Toolbar } from '@sveltia/ui';
   import { _ } from 'svelte-i18n';
 
   import AccountButton from '$lib/components/global/toolbar/items/account-button.svelte';
-  import CreateButton from '$lib/components/global/toolbar/items/create-button.svelte';
   import HelpButton from '$lib/components/global/toolbar/items/help-button.svelte';
-  import NotificationsButton from '$lib/components/global/toolbar/items/notifications-button.svelte';
   import PageSwitcher from '$lib/components/global/toolbar/items/page-switcher.svelte';
-  import PublishButton from '$lib/components/global/toolbar/items/publish-button.svelte';
-  import QuickSearchBar from '$lib/components/global/toolbar/items/quick-search-bar.svelte';
   import SiteLogo from '$lib/components/global/toolbar/items/site-logo.svelte';
   import { hasOverlay } from '$lib/services/app/navigation';
   import { prefs } from '$lib/services/user/prefs';
 </script>
 
-<div role="none" class="toolbar-wrapper" inert={$hasOverlay}>
-  <Toolbar variant="primary" aria-label={$_('global')}>
-    <div role="none" class="buttons">
-      <SiteLogo />
-      <PageSwitcher />
-    </div>
-    <QuickSearchBar />
-    <div role="none" class="buttons">
-      <PublishButton />
-      <CreateButton />
-      <NotificationsButton />
-      {#if $prefs.devModeEnabled}
-        <HelpButton />
-      {/if}
-      <AccountButton />
-    </div>
-  </Toolbar>
-</div>
+<nav
+  class="spectrum-rail"
+  aria-label={$_('global')}
+  inert={$hasOverlay}
+>
+  <div role="none" class="rail-logo">
+    <SiteLogo />
+  </div>
+  <div role="none" class="rail-nav">
+    <PageSwitcher />
+  </div>
+  <div role="none" class="rail-spacer"></div>
+  <div role="none" class="rail-bottom">
+    {#if $prefs.devModeEnabled}
+      <HelpButton />
+    {/if}
+    <AccountButton />
+  </div>
+</nav>
 
 <style lang="scss">
-  .toolbar-wrapper {
-    display: contents;
+  .spectrum-rail {
+    width: 48px;
+    background: var(--enterprise-nav-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 4px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
 
-    &[inert] {
-      :global {
-        .sui.search-bar {
-          // Disable the keyboard shortcut for the search bar
-          display: none !important;
+  .rail-logo {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, hsl(211 84% 54%), hsl(260 80% 60%));
+    border-radius: 8px;
+    overflow: hidden;
+
+    :global {
+      .sui.button {
+        color: white !important;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+
+        img {
+          width: 20px;
+          height: 20px;
+          filter: brightness(0) invert(1);
         }
       }
     }
+  }
+
+  .rail-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 
     :global {
-      & > .sui.toolbar {
-        --toolbar-background-color: var(--enterprise-nav-bg);
+      .sui.select-button-group {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .sui.button {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         color: var(--enterprise-nav-text);
-        border-bottom: 1px solid var(--enterprise-nav-border);
+        position: relative;
 
-        @media (width < 768px) {
-          padding: 0 4px;
-        }
-
-        .buttons {
-          flex: auto;
-          display: flex;
-          align-items: center;
-          width: 50%;
-
-          &:last-child {
-            justify-content: flex-end;
-          }
-
-          // Style toolbar buttons for dark background
-          .sui.button {
-            color: var(--enterprise-nav-text);
-
-            &:hover {
-              color: var(--enterprise-nav-active);
-            }
-          }
-        }
-
-        // Style search bar for dark toolbar
-        .sui.search-bar {
-          flex: none;
-          width: 640px;
-          max-width: 50%;
-          --sui-textbox-background-color: var(--enterprise-search-bg);
-          --sui-textbox-border-color: var(--enterprise-search-border);
-          --sui-textbox-foreground-color: var(--enterprise-nav-active);
-
-          @media (width < 768px) {
-            flex: auto;
-            width: -moz-available;
-            width: -webkit-fill-available;
-            width: stretch;
-            max-width: none;
-          }
-        }
-
-        // Style heading text (page title) for dark background
-        h2 {
+        &:hover {
           color: var(--enterprise-nav-active);
+          background: rgba(255, 255, 255, 0.08);
         }
+
+        &[aria-pressed='true'] {
+          color: var(--enterprise-nav-active);
+          background: rgba(255, 255, 255, 0.12);
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            width: 3px;
+            height: 20px;
+            background: var(--sui-primary-accent-color);
+            border-radius: 0 3px 3px 0;
+          }
+        }
+      }
+    }
+  }
+
+  .rail-spacer {
+    flex: 1;
+  }
+
+  .rail-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+
+    :global {
+      .sui.button,
+      .sui.menu-button > button {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        color: var(--enterprise-nav-text);
+
+        &:hover {
+          color: var(--enterprise-nav-active);
+          background: rgba(255, 255, 255, 0.08);
+        }
+      }
+
+      // Style the avatar in the rail
+      img.avatar {
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 50%;
       }
     }
   }

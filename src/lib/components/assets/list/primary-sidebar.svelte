@@ -38,13 +38,15 @@
     <header>
       <h2>{$_('assets')}</h2>
     </header>
-    <QuickSearchBar
-      onclick={(event) => {
-        event.preventDefault();
-        goto('/search');
-      }}
-    />
   {/if}
+  <QuickSearchBar
+    onclick={$isSmallScreen
+      ? (event) => {
+          event.preventDefault();
+          goto('/search');
+        }
+      : undefined}
+  />
   <Listbox aria-label={$_('asset_folder_list')} aria-controls="assets-container">
     <OptionGroup label={$_('asset_location.repository')}>
       {#each folders as folder ([folder.collectionName, folder.fileName, folder.internalPath].join(':'))}
