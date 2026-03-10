@@ -202,10 +202,10 @@
     height: 100%;
 
     &.tile {
-      border-width: 1px;
+      border-width: 0;
       border-style: solid;
       border-color: transparent;
-      padding: var(--tile-padding, 12px);
+      padding: 0;
 
       :global(.sui.icon) {
         font-size: 48px;
@@ -220,7 +220,7 @@
 
     &:is(.tile, .icon) {
       overflow: hidden;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 4 / 3;
 
       img {
         // Prevent the image from being dragged

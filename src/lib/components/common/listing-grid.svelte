@@ -64,12 +64,12 @@
 
       .grid-body {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 280px), 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 180px), 1fr));
         gap: 16px;
         border-width: 0;
 
         @media (width < 768px) {
-          grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 160px), 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(var(--grid-size, 140px), 1fr));
           gap: 8px;
         }
       }
@@ -84,8 +84,13 @@
         .grid-cell {
           display: block;
 
-          &.image:empty {
-            aspect-ratio: 1 / 1;
+          &.image {
+            position: relative;
+            aspect-ratio: 4 / 3;
+
+            &:empty {
+              aspect-ratio: 4 / 3;
+            }
           }
         }
 
@@ -99,9 +104,9 @@
         .title {
           .label {
             overflow: hidden;
-            margin: 12px;
-            height: 40px;
-            line-height: 1.5;
+            margin: 8px 12px 4px;
+            height: 20px;
+            line-height: 1.4;
           }
         }
 
@@ -114,16 +119,15 @@
         }
 
         &[tabindex] {
-          border-radius: 8px;
+          border-radius: 0;
           border: 1px solid var(--sui-secondary-border-color);
           background-color: var(--sui-secondary-background-color);
           cursor: pointer;
-          transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+          transition: border-color 200ms ease, box-shadow 200ms ease;
 
           &:is(:hover, :focus, :active) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
-            border-color: var(--sui-control-border-color);
+            border-color: var(--sui-primary-accent-color);
+            box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
           }
         }
       }

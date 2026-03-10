@@ -5,14 +5,12 @@
   import HelpButton from '$lib/components/global/toolbar/items/help-button.svelte';
   import PageSwitcher from '$lib/components/global/toolbar/items/page-switcher.svelte';
   import SiteLogo from '$lib/components/global/toolbar/items/site-logo.svelte';
-  import { hasOverlay } from '$lib/services/app/navigation';
   import { prefs } from '$lib/services/user/prefs';
 </script>
 
 <nav
   class="spectrum-rail"
   aria-label={$_('global')}
-  inert={$hasOverlay}
 >
   <div role="none" class="rail-logo">
     <SiteLogo />

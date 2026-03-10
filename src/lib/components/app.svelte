@@ -87,7 +87,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet"
   />
   {#if $cmsConfigLoaded}
@@ -141,7 +141,7 @@
       --sui-base-hue: 213;
 
       // Font: Inter — clean, modern, matches Spectrum's professional feel
-      --sui-font-family-default: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --sui-font-family-default: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --sui-font-weight-normal: 400;
       --sui-font-weight-bold: 600;
 

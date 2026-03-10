@@ -12,8 +12,6 @@
   import PrimarySidebar from '$lib/components/assets/list/primary-sidebar.svelte';
   import PrimaryToolbar from '$lib/components/assets/list/primary-toolbar.svelte';
   import SecondarySidebar from '$lib/components/assets/list/secondary-sidebar.svelte';
-  import SecondaryToolbar from '$lib/components/assets/list/secondary-toolbar.svelte';
-  import PageContainerMainArea from '$lib/components/common/page-container-main-area.svelte';
   import PageContainer from '$lib/components/common/page-container.svelte';
   import {
     announcedPageStatus,
@@ -29,6 +27,7 @@
     listedAssets,
     showAssetOverlay,
   } from '$lib/services/assets/view';
+  import { formatSize } from '$lib/services/utils/file';
   import { isSmallScreen } from '$lib/services/user/env';
 
   const ROUTE_REGEX = /^\/assets(?:\/(?<folderPath>.+?)(?:\/(?<fileName>[^/]+\.[A-Za-z0-9]+))?)?$/;
@@ -36,8 +35,20 @@
   let isIndexPage = $state(false);
 
   const selectedAssetFolderLabel = $derived(
-    // `$appLocale` is a key, because `getFolderLabelByCollection` can return a localized label
     $appLocale && $selectedAssetFolder ? getFolderLabelByCollection($selectedAssetFolder) : '',
+  );
+
+  // Compute stats for summary cards
+  const totalAssetCount = $derived($allAssets.length);
+  const imageCount = $derived($allAssets.filter((a) => a.kind === 'image').length);
+  const videoCount = $derived($allAssets.filter((a) => a.kind === 'video').length);
+  const totalStorageBytes = $derived($allAssets.reduce((sum, a) => sum + (a.size || 0), 0));
+
+  const imagePercent = $derived(
+    totalAssetCount > 0 ? ((imageCount / totalAssetCount) * 100).toFixed(1) : '0',
+  );
+  const videoPercent = $derived(
+    totalAssetCount > 0 ? ((videoCount / totalAssetCount) * 100).toFixed(1) : '0',
   );
 
   /**
@@ -131,25 +142,47 @@
   {/snippet}
   {#snippet main()}
     {#if !$isSmallScreen || !isIndexPage}
-      <PageContainerMainArea
-        id="assets-container"
+      <div role="group" class="carbon-assets-main" id="assets-container"
         aria-label={$_('x_asset_folder', { values: { folder: selectedAssetFolderLabel } })}
       >
-        {#snippet primaryToolbar()}
-          <PrimaryToolbar />
-        {/snippet}
-        {#snippet secondaryToolbar()}
-          {#if $listedAssets.length}
-            <SecondaryToolbar />
-          {/if}
-        {/snippet}
-        {#snippet mainContent()}
-          <AssetList />
-        {/snippet}
-        {#snippet secondarySidebar()}
+        <PrimaryToolbar />
+        <!-- Summary stat cards -->
+        {#if !$isSmallScreen && $listedAssets.length}
+          <div role="none" class="stat-cards">
+            <div class="stat-card">
+              <div class="stat-label">TOTAL ASSETS</div>
+              <div class="stat-value">{totalAssetCount}</div>
+              <div class="stat-sub">{$_('assets')}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">IMAGES</div>
+              <div class="stat-value">{imageCount}</div>
+              <div class="stat-sub">{imagePercent}%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">VIDEOS</div>
+              <div class="stat-value">{videoCount}</div>
+              <div class="stat-sub">{videoPercent}%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">STORAGE USED</div>
+              <div class="stat-value">
+                {#key $appLocale}
+                  {formatSize(totalStorageBytes)}
+                {/key}
+              </div>
+              <div class="stat-sub">{$_('assets')}</div>
+            </div>
+          </div>
+        {/if}
+        <!-- Asset grid/list -->
+        <div role="none" class="carbon-main-inner">
+          <div role="none" class="carbon-main-content">
+            <AssetList />
+          </div>
           <SecondarySidebar />
-        {/snippet}
-      </PageContainerMainArea>
+        </div>
+      </div>
     {/if}
   {/snippet}
 </PageContainer>
@@ -201,3 +234,73 @@
     })}
   </Alert>
 </Toast>
+
+<style lang="scss">
+  .carbon-assets-main {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--sui-primary-background-color);
+  }
+
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px 24px;
+    background-color: var(--sui-primary-background-color);
+
+    .stat-card {
+      padding: 16px 20px;
+      border: 1px solid var(--sui-secondary-border-color);
+      border-radius: 0;
+      background-color: var(--sui-secondary-background-color);
+
+      .stat-label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--sui-tertiary-foreground-color);
+        margin-bottom: 4px;
+      }
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 300;
+        color: var(--sui-primary-foreground-color);
+        line-height: 1.2;
+      }
+
+      .stat-sub {
+        font-size: 0.75rem;
+        color: var(--sui-tertiary-foreground-color);
+        margin-top: 2px;
+      }
+    }
+  }
+
+  .carbon-main-inner {
+    flex: auto;
+    display: flex;
+    overflow: hidden;
+
+    .carbon-main-content {
+      flex: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    :global(.secondary-sidebar) {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      width: 320px;
+      background-color: var(--sui-secondary-background-color);
+      border-inline-start: 1px solid var(--sui-secondary-border-color);
+    }
+  }
+</style>
