@@ -12,6 +12,7 @@
   import { listedEntries } from '$lib/services/contents/collection/view';
   import { getEntryThumbnail } from '$lib/services/contents/entry/assets';
   import { getEntrySummary } from '$lib/services/contents/entry/summary';
+  import { DATE_FORMAT_OPTIONS } from '$lib/services/utils/date';
   import { workflowStatuses } from '$lib/services/contents/workflow';
   import { isMediumScreen, isSmallScreen } from '$lib/services/user/env';
 
@@ -24,14 +25,14 @@
    * @type {string[][]}
    */
   const GRADIENTS = [
-    ['#3b82f6', '#1d4ed8'], // blue
-    ['#8b5cf6', '#6d28d9'], // purple
-    ['#10b981', '#059669'], // emerald
-    ['#f59e0b', '#d97706'], // amber
-    ['#ec4899', '#db2777'], // pink
-    ['#06b6d4', '#0891b2'], // cyan
-    ['#f97316', '#ea580c'], // orange
-    ['#6366f1', '#4f46e5'], // indigo
+    ['hsl(215 80% 90%)', 'hsl(215 70% 85%)'], // soft blue
+    ['hsl(270 60% 90%)', 'hsl(270 50% 85%)'], // soft purple / lavender
+    ['hsl(155 50% 88%)', 'hsl(155 45% 82%)'], // soft mint
+    ['hsl(45 80% 90%)', 'hsl(45 70% 84%)'], // soft cream / yellow
+    ['hsl(340 50% 90%)', 'hsl(340 45% 85%)'], // soft pink
+    ['hsl(190 55% 88%)', 'hsl(190 50% 82%)'], // soft cyan
+    ['hsl(25 70% 90%)', 'hsl(25 60% 85%)'], // soft peach
+    ['hsl(235 55% 90%)', 'hsl(235 50% 85%)'], // soft indigo
   ];
 
   /**
@@ -74,6 +75,76 @@
   const collectionIcon = $derived(collection.icon || 'bookmark_manager');
   const localeKeys = $derived(Object.keys(entry.locales));
   const workflowStatus = $derived($workflowStatuses?.get?.(entry.id) ?? 'draft');
+
+  /** Common field names for category-like metadata. */
+  const CATEGORY_FIELDS = ['category', 'categories', 'type', 'section', 'tag', 'tags'];
+  /** Common field names for date metadata. */
+  const DATE_FIELDS = ['date', 'publish_date', 'publishDate', 'created', 'created_at', 'createdAt'];
+
+  /**
+   * Get entry content for the default locale.
+   * @param {Entry} e Entry object.
+   * @param {InternalEntryCollection} col Collection.
+   * @returns {Record<string, any> | undefined} Content map.
+   */
+  const getContent = (e, col) => {
+    const locale = col._i18n.defaultLocale;
+
+    return (e.locales[locale] ?? Object.values(e.locales)[0])?.content;
+  };
+
+  /**
+   * Get a category-like value from the entry's content.
+   * @param {Entry} e Entry object.
+   * @param {InternalEntryCollection} col Collection.
+   * @returns {string | undefined} Category label or undefined.
+   */
+  const getCategoryValue = (e, col) => {
+    const content = getContent(e, col);
+
+    if (!content) return undefined;
+
+    for (const field of CATEGORY_FIELDS) {
+      const val = content[field];
+
+      if (typeof val === 'string' && val.trim()) return val.trim();
+      if (Array.isArray(val) && val.length) return String(val[0]);
+    }
+
+    return undefined;
+  };
+
+  /**
+   * Get a date value from the entry's content fields or commitDate.
+   * @param {Entry} e Entry object.
+   * @param {InternalEntryCollection} col Collection.
+   * @returns {Date | undefined} Parsed date or undefined.
+   */
+  const getDateValue = (e, col) => {
+    const content = getContent(e, col);
+
+    if (content) {
+      for (const field of DATE_FIELDS) {
+        const val = content[field];
+
+        if (val) {
+          const d = new Date(val);
+
+          if (!Number.isNaN(d.getTime())) return d;
+        }
+      }
+    }
+
+    return e.commitDate ?? undefined;
+  };
+
+  const categoryLabel = $derived(getCategoryValue(entry, collection));
+  const entryDate = $derived(getDateValue(entry, collection));
+  const formattedDate = $derived(
+    entryDate
+      ? new Intl.DateTimeFormat($appLocale ?? 'en', DATE_FORMAT_OPTIONS).format(entryDate)
+      : undefined,
+  );
 
   /**
    * Update the entry selection.
@@ -153,6 +224,19 @@
         {/if}
       </TruncatedText>
     </div>
+    {#if viewType === 'grid' && (categoryLabel || formattedDate)}
+      <div role="none" class="meta">
+        {#if categoryLabel}
+          <span class="meta-category">{categoryLabel}</span>
+        {/if}
+        {#if categoryLabel && formattedDate}
+          <span class="meta-sep">&middot;</span>
+        {/if}
+        {#if formattedDate}
+          <span class="meta-date">{formattedDate}</span>
+        {/if}
+      </div>
+    {/if}
   </GridCell>
   <GridCell class="card-footer">
     <span class="status-badge status-{workflowStatus}">
@@ -179,7 +263,7 @@
 
     :global(.icon) {
       font-size: 40px;
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(0, 0, 0, 0.08);
     }
 
     &.list-mode {
@@ -244,6 +328,29 @@
     color: var(--sui-secondary-foreground-color);
     text-transform: uppercase;
     flex-shrink: 0;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 12px 8px;
+    font-size: 11px;
+    color: var(--sui-secondary-foreground-color);
+    line-height: 1;
+  }
+
+  .meta-category {
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .meta-sep {
+    opacity: 0.4;
+  }
+
+  .meta-date {
+    opacity: 0.7;
   }
 
   .label {
