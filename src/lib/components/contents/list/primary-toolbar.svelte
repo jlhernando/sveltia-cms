@@ -60,7 +60,16 @@
         }}
       />
     {/if}
-    <h2 role="none">{collectionLabel}</h2>
+    <h2 role="none">
+      {collectionLabel}
+      {#if $listedEntries.length}
+        <span class="entry-count">
+          {$listedEntries.length === 1
+            ? $_('one_entry')
+            : $_('many_entries', { values: { count: $listedEntries.length } })}
+        </span>
+      {/if}
+    </h2>
     {#if $isSmallScreen}
       <Spacer flex />
     {:else}
@@ -119,6 +128,14 @@
 <style lang="scss">
   h2 {
     flex: none !important;
+  }
+
+  .entry-count {
+    margin-inline-start: 8px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--sui-secondary-foreground-color);
+    letter-spacing: 0.2px;
   }
 
   .description {
