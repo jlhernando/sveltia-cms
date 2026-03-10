@@ -327,6 +327,9 @@ export const initWorkflowStatuses = async (entries) => {
         if (['draft', 'in_review', 'ready'].includes(status)) {
           merged.set(entry.id, status);
         }
+      } else if (defaultLocaleContent?.eleventyExcludeFromCollections === true) {
+        // Eleventy-excluded entries are treated as drafts
+        merged.set(entry.id, 'draft');
       } else if (!merged.has(entry.id)) {
         // Entries without an explicit workflow status are assumed to be already published
         merged.set(entry.id, 'ready');
