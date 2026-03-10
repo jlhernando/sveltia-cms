@@ -80,7 +80,16 @@
         {/if}
       </nav>
     {:else}
-      <h2 role="none">{collectionLabel}</h2>
+      <h2 role="none">
+        {collectionLabel}
+        {#if $listedEntries.length}
+          <span class="entry-count">
+            {$listedEntries.length === 1
+              ? $_('one_entry')
+              : $_('many_entries', { values: { count: $listedEntries.length } })}
+          </span>
+        {/if}
+      </h2>
     {/if}
     {#if $isSmallScreen}
       <Spacer flex />
@@ -164,6 +173,12 @@
 
     &:hover {
       color: var(--sui-primary-accent-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--sui-primary-accent-color);
+      outline-offset: 2px;
+      border-radius: 2px;
     }
   }
 
