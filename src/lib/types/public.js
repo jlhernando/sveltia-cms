@@ -1580,8 +1580,11 @@
  * details.
  * @property {string} [app_title] Custom title for the CMS, which will be displayed on the login
  * page and the browser’s tab. Default: `Sveltia CMS`.
- * @property {string} [site_url] Site URL. Default: current site’s origin
+ * @property {string} [site_url] Site URL. Default: current site's origin
  * ([`location.origin`](https://developer.mozilla.org/en-US/docs/Web/API/Location/origin)).
+ * @property {string} [preview_site_url] Base URL for preview links and the live preview iframe. When
+ * set, these use this URL instead of `site_url`. Useful for pointing to a staging or
+ * auth-protected environment separate from production.
  * @property {string} [display_url] Site URL linked from the UI. Default: `site_url` option value.
  * @property {string} [logo_url] Absolute URL or absolute path to the site logo that will be
  * displayed on the entrance page and the browser’s tab (favicon). A square image works best.

@@ -45,8 +45,9 @@
 /**
  * CMS configuration extra properties for internal use.
  * @typedef {object} CmsConfigExtraProps
- * @property {string} _siteURL `site_url` or the current `location.origin` if it’s not set.
+ * @property {string} _siteURL `site_url` or the current `location.origin` if it's not set.
  * @property {string} _baseURL The base/origin of `_siteURL`.
+ * @property {string} _previewBaseURL The base/origin of `preview_site_url`, or empty if not set.
  */
 
 /**

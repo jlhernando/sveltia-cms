@@ -140,6 +140,10 @@ export const initCmsConfig = async (manualConfig) => {
     config._siteURL = config.site_url?.trim() || (DEV ? DEV_SITE_URL : window.location.origin);
     config._baseURL = isURL(config._siteURL) ? new URL(config._siteURL).origin : '';
 
+    const previewURL = config.preview_site_url?.trim();
+
+    config._previewBaseURL = previewURL && isURL(previewURL) ? new URL(previewURL).origin : '';
+
     // Handle root collection folder variants, particularly for VitePress
     config.collections?.forEach((collection) => {
       if ('folder' in collection && (collection.folder === '.' || collection.folder === '/')) {

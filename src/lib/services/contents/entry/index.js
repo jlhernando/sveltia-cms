@@ -85,7 +85,11 @@ export const extractDateTime = ({ dateFieldName, fields, content }) => {
  * @see https://decapcms.org/docs/deploy-preview-links/
  */
 export const getEntryPreviewURL = (entry, locale, collection, collectionFile) => {
-  const { show_preview_links: showLinks = true, _baseURL: baseURL } = get(cmsConfig) ?? {};
+  const {
+    show_preview_links: showLinks = true,
+    _baseURL: baseURL,
+    _previewBaseURL: previewBaseURL,
+  } = get(cmsConfig) ?? {};
   const { slug, path: entryFilePath, content } = entry.locales[locale] ?? {};
 
   const {
@@ -134,7 +138,9 @@ export const getEntryPreviewURL = (entry, locale, collection, collectionFile) =>
       isIndexFile,
     });
 
-    return `${baseURL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    const effectiveBase = previewBaseURL || baseURL;
+
+    return `${effectiveBase.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
   } catch {
     return undefined;
   }
