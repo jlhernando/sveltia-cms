@@ -29,7 +29,7 @@
   const collectionFile = $derived($entryDraft?.collectionFile);
   const originalEntry = $derived($entryDraft?.originalEntry);
 
-  const previewURL = $derived(() => {
+  const previewURL = $derived.by(() => {
     const url =
       collection && originalEntry && locale
         ? getEntryPreviewURL(originalEntry, locale, collection, collectionFile)
