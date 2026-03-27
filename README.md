@@ -1,31 +1,78 @@
-# Sveltia CMS
+# Sveltia CMS (Custom Fork)
 
-[Sveltia CMS](https://sveltiacms.app/en/) is a Git-based headless content management system under active development as a modern, direct [replacement for Netlify CMS and Decap CMS](https://sveltiacms.app/en/docs/successor-to-netlify-cms). We have solved hundreds of issues reported in the predecessor’s repository, ranging from critical bugs to top feature requests, while maintaining high compatibility with existing Netlify/Decap CMS configurations.
+Personal fork of [Sveltia CMS](https://github.com/sveltia/sveltia-cms) with UI/UX enhancements, design explorations, and workflow improvements.
 
-Built from the ground up, Sveltia CMS offers excellent UX, DX, performance, security and internationalization (i18n) support. Although some features are still missing, our numerous enhancements ensure smooth daily workflows for content editors and developers alike.
+Based on upstream **v0.146.0**.
 
-This free, open-source successor to Netlify CMS is currently in beta, with version 1.0 expected in early 2026. Check out the [Release Notes](https://github.com/sveltia/sveltia-cms/releases) for the latest updates.
+## What's Changed
 
-Despite its beta status, more and more sites are [migrating from Netlify/Decap CMS](https://sveltiacms.app/en/docs/migration/netlify-decap-cms) to Sveltia CMS. It’s already being used by hundreds of individuals and organizations worldwide. Visit our [Showcase](https://sveltiacms.app/en/showcase) to see examples from various industries and use cases.
+### UI & Design
 
-[![Sveltia CMS: Fast, Git-based, Headless, Modern UX, Mobile Support, I18n Support, Open Source](https://sveltiacms.app/images/highlights/cover.webp)](https://sveltiacms.app/en/)
+- **Spectrum Premium layout** with vertical icon rail navigation
+- **Carbon Enterprise** assets page redesign
+- **Glassmorphism effects** on toolbars and sidebars
+- **Plus Jakarta Sans** font override
+- **Custom sidebar logo** setting in Appearance panel
+- **Breadcrumb navigation** in collection headings
+- **Entry count badges** with blue circle indicators
+- **Soft pastel gradient** entry cards with metadata rows
 
-[![290 Netlify/Decap CMS issues solved in Sveltia CMS](https://sveltiacms.app/images/highlights/decap-issues.webp?20260124)](https://sveltiacms.app/en/docs/successor-to-netlify-cms)
+### Features
 
-## Documentation
+- **`preview_site_url`** config option for separate preview environments
+- **Live preview** with multi-device viewport support (mobile/tablet/desktop)
+- **Debounced search** with fixed navigation and store-bound values
+- **3-stage editorial workflow** mapping (Draft, In Review, Ready to Publish)
+- **Eleventy integration**: `eleventyExcludeFromCollections` mapped to draft workflow status
 
-We provide comprehensive documentation to help you get started and make the most of Sveltia CMS:
+### Fixes
 
-- [Introduction](https://sveltiacms.app/en/docs/intro): Feature highlights, use cases, project goals
-- [Getting Started](https://sveltiacms.app/en/docs/start): Step-by-step setup instructions
-- [Migration Guides](https://sveltiacms.app/en/docs/migration): Instructions for migrating from other CMSs
-- [Roadmap](https://sveltiacms.app/en/docs/roadmap): Upcoming features and improvements
+- Live preview URL reactivity (`$derived.by()`)
+- Workflow race condition on config read
+- Search bar visibility on desktop
+- SCSS syntax issues after rebase
+- Glass blur token consistency
 
-## Community
+## Design Explorations
 
-Stay connected and get support through our community channels:
+The repo includes standalone HTML prototypes exploring different design systems:
 
-- [Bluesky](https://bsky.app/profile/sveltiacms.app): Follow us for news and updates
-- [Discord](https://discord.com/invite/5hwCGqup5b): Join the community and chat with us
-- [GitHub Discussions](https://github.com/sveltia/sveltia-cms/discussions): Ask questions and share ideas
-- [Contribute](https://github.com/sveltia/sveltia-cms/blob/main/CONTRIBUTING.md): Learn how to get involved
+| File | Design System |
+|------|---------------|
+| `design-1-carbon-enterprise.html` | IBM Carbon |
+| `design-1-spectrum-premium.html` | Adobe Spectrum |
+| `design-2-geist-minimal.html` | Vercel Geist |
+| `design-3-pinterest-gestalt.html` | Pinterest Gestalt |
+| `design-3-spectrum-premium.html` | Adobe Spectrum v2 |
+| `design-4-carbon-enterprise.html` | IBM Carbon v2 |
+| `design-4-govuk-accessible.html` | GOV.UK Design System |
+| `design-5-glassmorphism-luxury.html` | Glassmorphism |
+| `design-5-glassmorphism-modern.html` | Glassmorphism v2 |
+
+## Tech Stack
+
+- **Svelte 5** + **Vite 7** + **TypeScript**
+- **Lexical** (rich text editor)
+- **Leaflet** (map widget)
+- **SCSS/PostCSS** styling
+- **svelte-i18n** for internationalization
+
+## Development
+
+```bash
+pnpm install
+pnpm dev          # Dev server
+pnpm build        # Production build
+pnpm test         # Run tests
+pnpm run check    # Lint + type check + audit
+pnpm format       # Auto-format
+```
+
+## Upstream
+
+- Upstream repo: [sveltia/sveltia-cms](https://github.com/sveltia/sveltia-cms)
+- Upstream docs: [sveltiacms.app](https://sveltiacms.app/en/)
+
+## License
+
+MIT (same as upstream)
