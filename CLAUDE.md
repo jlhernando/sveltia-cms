@@ -4,136 +4,126 @@
 
 When telegram-me MCP tools are available, this project is controlled via Telegram by default.
 
-**Auto-start autonomous mode:**
-1. At the start of every conversation, create the flag file: `touch /tmp/telegram-me-autonomous.flag`
-2. **Check for resumption context**: Look for `~/.telegram-me/resume/{project}.json`. If it exists:
-   - Read the saved context (last messages from the rate-limited session)
-   - Delete the resumption file
-   - Notify via Telegram: "Resuming from rate-limited session."
-   - Report the last task: show the saved `lastMessages` so the user knows what was in progress
-   - Ask user: "Continue with this task?" with `["Yes, continue", "New task"]` options
-   - If "Yes, continue": proceed with the last task from the saved messages
-3. Call `get_user_message` to check for buffered Telegram messages
-4. Notify user via Telegram: "Autonomous mode active."
-5. Enter the autonomous loop
+### Auto-start
 
-**Autonomous loop:**
-1. Wait for Telegram instructions using `ask_user`
-2. Execute the instruction (permissions are auto-approved via hook)
-3. Report results via `notify_user`
-4. **Suggest next steps** (see Smart Suggester below)
-5. Loop back to waiting
-6. Exit when user sends `/stop` or `/exit`
+1. Create flag: `touch /tmp/telegram-me-autonomous.flag`
+2. Check for `~/.telegram-me/resume/{project}.json` — if found, read saved context, delete file, notify "Resuming from rate-limited session", ask "Continue with this task?" with `["Yes, continue", "New task"]`
+3. Call `get_user_message` for buffered messages
+4. Notify: "Autonomous mode active."
+5. Enter autonomous loop
 
-**Smart Suggester — after completing a task:**
-Instead of passively asking "What's next?", proactively analyze the project state and suggest 2-4 concrete next steps. Run these checks silently:
+### Autonomous Loop
 
-1. **Git status**: uncommitted changes? Untracked files? Suggest committing or cleaning up.
-2. **Test health**: run tests silently. Failing tests? Suggest fixing them.
-3. **TODOs/FIXMEs**: search for TODO/FIXME comments. Highlight actionable ones.
-4. **Recent changes context**: based on the task just completed, suggest natural follow-ups (e.g., "added a feature → write tests", "fixed a bug → check for similar patterns").
-5. **Build health**: does the build succeed? TypeScript errors? Suggest fixing them.
+1. Wait for instructions via `ask_user`
+2. Check if message starts with `[BTW]` — if so, answer briefly via `notify_user` and continue current task (don't treat as new instruction)
+3. Execute (permissions auto-approved via hook)
+4. Verify tests if code modified — fix failures before proceeding
+5. Report results via `notify_user`
+6. **Smart Suggester**: analyze project state silently and present 2-4 concrete next steps as `ask_user` options (see details below)
+7. Loop back. Exit on `/stop` or `/exit`
 
-Present suggestions via `ask_user` with the `options` parameter so they appear as reply keyboard buttons:
-- Question text: "Done! Here's what we could tackle next:"
-- Options: `["Fix 2 failing tests", "TODO in file.ts:42", "Commit 3 changed files", "Something else"]`
+### Key Rules
 
-**IMPORTANT — always include `options`:** Every `ask_user` call MUST include the `options` parameter with 2-4 choices as reply keyboard buttons. This includes the initial "waiting for instructions" prompt, smart suggestions, and any other question. Without `options`, the user loses the convenient keyboard buttons.
+- **Always include `options`**: Every `ask_user` call MUST include the `options` parameter (2-4 choices). Without it, reply keyboard buttons don't appear.
+- **Always acknowledge messages** in TWO places: terminal output ("**Telegram message received:** {message}") AND Telegram (`notify_user`)
+- **File changes after plan approval**: execute without per-file confirmations. Only ask for unplanned changes.
+- **NEVER use \`EnterPlanMode\` or \`ExitPlanMode\`** — they block autonomous mode. Use \`approve_plan\` tool instead.
+- **Exiting**: delete flag `rm -f /tmp/telegram-me-autonomous.flag`, notify "Autonomous mode ended."
 
-Guidelines:
-- Keep analysis fast — skip slow checks if the project is large
-- Prioritize: failing tests > build errors > uncommitted changes > TODOs
-- If nothing actionable is found, ask "What would you like to do next?" with generic options like `["Check project status", "Run tests", "Review recent changes", "Something else"]`
-- Don't repeat suggestions the user already declined in this session
+### Planning via Telegram
 
-**Exiting autonomous mode:**
-1. Delete the flag file: `rm -f /tmp/telegram-me-autonomous.flag`
-2. Notify user: "Autonomous mode ended."
+1. Explore codebase, design approach
+2. Send plan via `approve_plan` (auto-splits at 4000 chars, shows Approve/Reject/Request Changes buttons)
+3. Returns `{ decision, feedback? }` — implement on approve, revise on changes requested
 
-**Always acknowledge Telegram messages:**
-- Every message received must be acknowledged in TWO places:
-  1. In the terminal: Output "**Telegram message received:** {message}"
-  2. In Telegram: Send a response using `notify_user`
-- Check for new messages periodically using `get_user_message`
+### Smart Suggester
 
-**Ask before file changes:**
-- Before using Edit, Write, or any file-modifying tool, use `ask_user` to confirm
-- Format: "About to [action] [file]. Proceed?" with [Yes/No] options
+After completing a task, proactively analyze the project state and suggest 2-4 concrete next steps:
 
-**Planning via Telegram (NEVER use plan mode):**
-- NEVER use `EnterPlanMode` or `ExitPlanMode` — they trigger terminal prompts that block autonomous mode
-- For tasks requiring planning: explore the codebase, write a plan as text, send via `approve_plan`
-- After user approves, implement directly without entering plan mode
+1. **Git status**: uncommitted changes? Untracked files?
+2. **Test health**: run tests silently. Failing tests?
+3. **TODOs/FIXMEs**: search for actionable comments.
+4. **Recent changes context**: suggest natural follow-ups (e.g., "added a feature → write tests")
+5. **Build health**: TypeScript errors?
 
-**Cross-bot code review (/review):**
-When the user sends `/review`, use the `request_review` MCP tool to launch a cross-bot review:
-1. Generate a review document: run `git diff` (or `git diff HEAD~1` for the last commit), write it to a temp file with context
-2. Call `request_review` with the file path — this launches another bot to review the changes
-3. The tool blocks until the reviewer finishes (up to 5 min) and returns the feedback
-4. Share the feedback with the user via `notify_user`
-If no reviewer bot is available, the tool returns a list of busy bots.
+Prioritize: failing tests > build errors > uncommitted changes > TODOs. Keep analysis fast. Don't repeat declined suggestions. Generic fallback: `["Check project status", "Run tests", "Review recent changes", "Something else"]`
 
-**Telegram commands:**
+### Commands
+
 | Command | Action |
 |---------|--------|
-| `/stop` or `/exit` | Exit autonomous mode |
+| `/stop` `/exit` | Exit autonomous mode |
 | `/status` | Report current activity |
-| `/model` | Report current model |
-| `/compact` | Remind user to run /compact in terminal |
-| `/help` | List available commands |
-| `/review` | Launch cross-bot code review (uses `request_review` MCP tool) |
-| `/design <brief>` | Launch specialist designer agent (uses `request_specialist` MCP tool) |
-| `/usage` | Usage stats (server-side, zero tokens) |
-| `/ping` | Health check (server-side, zero tokens) |
-| `/bots` | Show all bot statuses (server-side, zero tokens) |
-| `/dash` | Dashboard summary (server-side, zero tokens) |
-| `/summon` | Switch to a different project (server-side) |
-| `/restart` | Kill and relaunch this session (server-side) |
-| `/kill` | Terminate this session (server-side) |
-| `/refine <prompt>` | Transform a rough prompt into a well-crafted instruction |
-| `/self-driving [N]` | Start fully autonomous improvement loop (N iterations, default 3) |
+| `/model` | Pick AI model per project (server-side, zero tokens) |
+| `/compact` | Remind user to run in terminal |
+| `/help` | List commands |
+| `/review` | Cross-bot code review (`request_review` tool) |
+| `/design <brief>` | Specialist designer agent (`request_specialist` tool) |
+| `/security_review [ref]` | Cross-bot security audit (`request_specialist` tool) |
+| `/refine <prompt>` | Transform rough prompt into well-crafted instruction |
+| `/cron` | Manage session tasks and daemon cron tasks |
+| `/self-driving [N]` | Fully autonomous improvement loop (default 3 iterations) |
+| `/check` | Last 50 lines of terminal output (server-side, zero tokens) |
+| `/diff [ref]` | Git diff output via Telegram/Telegraph (server-side, zero tokens) |
+| `/btw <question>` | Side question — answered briefly without derailing current task |
+| `/context` | Context window usage with visual bar (server-side, zero tokens) |
+| `/cost` | Session token consumption stats (server-side, zero tokens) |
+| `/ping` `/bots` `/dash` `/usage` `/summon` `/kill` `/restart` | Server-side (zero tokens) |
 
-**Prompt Refinement (/refine):**
-When the user sends `/refine <prompt>`, transform their rough instruction into a well-crafted, detailed prompt using these principles:
+### /review
+
+1. Generate review doc: `git diff` (or `git diff HEAD~1`), write to temp file
+2. Call `request_review` with file path — blocks up to 10 min
+3. Share feedback via `notify_user`
+4. If no reviewer bot available, inform the user
+
+### /design
+
+1. Call `request_specialist(role: "designer", brief: "...")` — launches available bot
+2. Designer researches Dribbble/Behance/Mobbin, creates 5 unique HTML designs, screenshots, comparison summary
+3. Present results. If no brief, ask with example options. If no bot available, inform the user.
+
+### /security_review
+
+When the user sends `/security_review [ref]`, launch a cross-bot security audit:
+1. Call `request_specialist(role: "security-reviewer", brief: ref || "HEAD")` — launches available bot
+2. Reviewer runs 3-phase analysis: context research → comparative analysis → vulnerability assessment
+3. Checks 6 categories: input validation, auth, crypto, injection, data exposure, config security
+4. Aggressive false-positive filtering (only confidence >= 8/10)
+5. Returns structured findings with severity, description, exploit scenario, recommendation
+6. Share results via `notify_user` (Telegraph for long reports)
+7. If no bot available, inform the user
+
+### /refine
+
+Transform rough instructions using these principles (apply selectively — don't over-constrain):
 1. **Specificity**: Replace vague terms with concrete actions, files, and modules
 2. **Decomposition**: Break complex tasks into ordered steps
 3. **Success criteria**: Define what "done" looks like
 4. **Scope boundaries**: Set explicit limits to prevent scope creep
 5. **Context grounding**: Reference specific files/functions from the project
 6. **Verification**: Include how to verify the change works
-7. **Minimal sufficiency**: Don't over-constrain — apply principles selectively
 
-Send the refined prompt via `notify_user`, then present options: `["Use this prompt", "Refine further", "Edit manually"]`.
-If "Use this prompt" → execute it. If "Refine further" → ask what to change. If "Edit manually" → user sends their version.
+Send refined prompt via `notify_user`, present: `["Use this prompt", "Refine further", "Edit manually"]`.
+Execute on "Use this prompt". Supports command chaining (e.g., `/refine /design <brief>`).
 If no prompt provided, ask "What task would you like me to refine?".
 
-**Command chaining:** `/refine` can be combined with other commands (e.g., `/refine /design <brief>`). Refine the brief for that command, then offer to execute it directly with the refined version.
+### /cron
 
-**Specialist Designer (/design):**
-When the user sends `/design <brief>`, launch a specialist designer agent:
-1. Call `request_specialist(role: "designer", brief: "<the brief>")` — this launches an available bot with designer-specific instructions
-2. The designer bot autonomously: researches design systems (Dribbble/Behance/Mobbin/component.gallery), creates 5 unique HTML designs grounded in real design systems, screenshots each, writes comparison summary
-3. When `request_specialist` returns, present the results to the user via `notify_user`
-4. If no brief provided, ask "What would you like me to design?" with example options
-5. If no bot is available, the tool returns a list of busy bots — inform the user
+**Session-scoped** (timers in running session): `/cron in 30m "msg"`, `/cron at 14:00 "msg"`, `/cron every 1h "msg"`, `/cron list`, `/cron clear`. Use `schedule_message` with `action: 'add'`.
 
-**Self-Driving Mode (/self-driving):**
-When the user sends `/self-driving [N]`, enter **fully autonomous improvement mode** for N iterations (default 3, max 20).
+**Daemon-scoped** (persistent, launch new sessions): `/cron task every day at 9:00 "msg"`, `/cron task at 14:00 "msg"`, `/cron tasks`. Use `schedule_message` with `action: 'add_cron'`. `task` keyword distinguishes daemon from session scope. Project-agnostic crons (no project) auto-create `~/telegram-me-crons/` on first use.
 
-**HARD RULE: ZERO `ask_user` calls during self-driving.** The ONLY communication tool is `notify_user`. Do NOT ask "What should I tackle?", do NOT ask for approval. YOU decide what to fix, YOU decide priority, YOU implement it. The `/self-driving` trigger IS the approval. Check `get_user_message(wait=false)` between phases only to detect `/stop`.
+### /self-driving
 
-**Self-driving replaces the normal autonomous loop. Do NOT fall back to ask → execute → suggest.**
+**HARD RULE: ZERO `ask_user` calls.** Only `notify_user`. YOU decide what to fix and implement. The trigger IS the approval. Self-driving replaces the normal autonomous loop. Check `get_user_message(wait=false)` between phases only for `/stop`.
 
-**Step-by-step:**
-1. Notify start: `notify_user("Self-driving activated (N iterations). Analyzing...")`
-2. Check resume state at `~/.telegram-me/self-driving/{project}.json`
-3. Audit repo silently (build, tests, TODOs, broken links, etc.). Rank findings by severity.
-4. Notify goals (informational only): `notify_user("Found N issues. Starting iteration 1/N...")` — proceed immediately.
-5. For each iteration (fully autonomous):
-   a. Pick highest-priority unresolved issue. Write scoped plan.
-   b. Notify plan via `notify_user` — proceed immediately, do NOT wait.
-   c. Delegate via `request_specialist(role: 'implementer', brief: plan)`
-   d. Review result: check diff for security, tests, scope creep.
-   e. Merge if clean, rollback if not — notify result.
-   f. Save state, check for `/stop`, trigger `/restart` for fresh context.
-6. After all iterations: notify final summary, clear state file, return to normal mode.
+1. Notify start, check resume state at `~/.telegram-me/self-driving/{project}.json`
+2. Audit repo silently (build, tests, TODOs, git status). Rank by severity.
+3. For each iteration (fully autonomous):
+   a. Pick highest-priority issue → notify plan → proceed immediately
+   b. Delegate via `request_specialist(role: 'implementer', brief: plan)`
+   c. Review result: check diff for security, tests, scope creep
+   d. Merge if clean, rollback if not — notify result
+   e. Save state, check for `/stop`, trigger `/restart` for fresh context
+4. After all iterations: notify summary, clear state, return to normal mode.
