@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 5: Glassmorphism Luxury — Sveltia CMS Asset Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: hsl(211, 84%, 54%);
+    --accent-glow: hsla(211, 84%, 54%, 0.3);
+    --accent-soft: hsla(211, 84%, 54%, 0.08);
+    --bg: #0e0e12;
+    --bg-surface: rgba(255,255,255,0.04);
+    --bg-elevated: rgba(255,255,255,0.07);
+    --bg-glass: rgba(255,255,255,0.06);
+    --bg-glass-hover: rgba(255,255,255,0.1);
+    --text: #f0f0f5;
+    --text-secondary: #8888a0;
+    --text-tertiary: #5a5a70;
+    --border: rgba(255,255,255,0.08);
+    --border-glass: rgba(255,255,255,0.12);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 24px;
+    --blur: blur(20px);
+    --blur-sm: blur(12px);
+    --shadow-glow: 0 0 40px rgba(37,99,235,0.06);
+    --font: 'Inter', -apple-system, sans-serif;
+    --transition: 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh; overflow: hidden;
+    display: flex; font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Ambient background gradient */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsla(250, 60%, 30%, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 60%, hsla(211, 60%, 25%, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 50% 80%, hsla(280, 50%, 20%, 0.1) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Rail */
+  .rail {
+    width: 48px; min-width: 48px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: var(--blur);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 0; gap: 4px;
+    z-index: 1; position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .rail-logo {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 20px rgba(37,99,235,0.3);
+  }
+  .rail-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-tertiary); cursor: pointer;
+    transition: all var(--transition); position: relative;
+  }
+  .rail-btn:hover { color: var(--text); background: var(--bg-glass); }
+  .rail-btn.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .rail-btn.active::before {
+    content: '';
+    position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 18px; border-radius: 0 2px 2px 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .rail-btn svg { width: 18px; height: 18px; }
+  .rail-flex { flex: 1; }
+  .rail-avatar {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ffa726);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: transform var(--transition);
+  }
+  .rail-avatar:hover { transform: scale(1.08); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 200px; min-width: 200px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: var(--blur-sm);
+    border-right: 1px solid var(--border);
+    padding: 16px 0;
+    display: flex; flex-direction: column;
+    z-index: 1; position: relative;
+  }
+  .sb-search-wrap {
+    padding: 0 12px; margin-bottom: 16px;
+  }
+  .sb-search {
+    width: 100%; padding: 9px 14px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text); font-size: 12px; font-family: var(--font);
+    outline: none; transition: all var(--transition);
+  }
+  .sb-search::placeholder { color: var(--text-tertiary); }
+  .sb-search:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+
+  .sb-label {
+    padding: 12px 16px 4px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary);
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; color: var(--text-secondary);
+    cursor: pointer; font-size: 13px; font-weight: 400;
+    transition: all var(--transition);
+    border-left: 2px solid transparent;
+  }
+  .sb-item:hover { color: var(--text); background: var(--bg-glass); }
+  .sb-item.active {
+    color: var(--text); background: var(--accent-soft);
+    border-left-color: var(--accent); font-weight: 500;
+  }
+  .sb-item svg { width: 16px; height: 16px; opacity: 0.5; }
+  .sb-badge {
+    margin-left: auto; font-size: 11px;
+    color: var(--text-tertiary);
+    background: var(--bg-glass);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .sb-item.active .sb-badge { background: var(--accent-soft); color: var(--accent); }
+
+  /* Main */
+  .main {
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden; z-index: 1; position: relative;
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 24px 0;
+  }
+  .header h1 {
+    font-size: 22px; font-weight: 600; letter-spacing: -0.3px;
+    background: linear-gradient(135deg, var(--text), var(--text-secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header-count {
+    font-size: 14px; color: var(--text-tertiary); font-weight: 300;
+  }
+  .header-gap { flex: 1; }
+  .upload-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: var(--radius-pill);
+    background: linear-gradient(135deg, var(--accent), #5b6eff);
+    color: white; border: none;
+    font-size: 13px; font-weight: 600; font-family: var(--font);
+    cursor: pointer; transition: all var(--transition);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37,99,235,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .upload-btn svg { width: 16px; height: 16px; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 24px;
+  }
+  .glass-pill {
+    padding: 7px 16px; border-radius: var(--radius-pill);
+    background: var(--bg-glass); border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 13px; font-weight: 500;
+    font-family: var(--font); cursor: pointer;
+    transition: all var(--transition);
+    backdrop-filter: var(--blur-sm);
+  }
+  .glass-pill:hover { background: var(--bg-glass-hover); color: var(--text); border-color: var(--border-glass); }
+  .glass-pill.active {
+    background: var(--accent-soft); color: var(--accent);
+    border-color: rgba(37,99,235,0.2);
+    box-shadow: 0 0 12px rgba(37,99,235,0.08);
+  }
+  .pill-gap { flex: 1; }
+
+  .search-glass {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 16px; border-radius: var(--radius-pill);
+    background: var(--bg-glass); border: 1px solid var(--border);
+    backdrop-filter: var(--blur-sm); min-width: 240px;
+    transition: all var(--transition);
+  }
+  .search-glass:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+  .search-glass svg { width: 14px; height: 14px; color: var(--text-tertiary); }
+  .search-glass input {
+    border: none; outline: none; background: none;
+    color: var(--text); font-size: 13px; font-family: var(--font); width: 100%;
+  }
+  .search-glass input::placeholder { color: var(--text-tertiary); }
+
+  .glass-icon-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--bg-glass); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); cursor: pointer;
+    transition: all var(--transition);
+  }
+  .glass-icon-btn:hover { background: var(--bg-glass-hover); color: var(--text); }
+  .glass-icon-btn.active { background: var(--accent-soft); color: var(--accent); border-color: rgba(37,99,235,0.2); }
+  .glass-icon-btn svg { width: 16px; height: 16px; }
+
+  /* Grid */
+  .grid-scroll {
+    flex: 1; overflow-y: auto; padding: 0 20px 20px;
+    display: flex; gap: 16px;
+  }
+  .grid-area { flex: 1; }
+
+  /* Masonry with glass cards */
+  .masonry { column-count: 4; column-gap: 12px; }
+  @media (max-width: 1400px) { .masonry { column-count: 3; } }
+
+  .glass-card {
+    break-inside: avoid; margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden; position: relative;
+    cursor: pointer; transition: all var(--transition);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    transform: translateZ(0);
+  }
+  .glass-card:hover {
+    border-color: var(--border-glass);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3), var(--shadow-glow);
+  }
+
+  .glass-card img {
+    width: 100%; display: block;
+    transition: all 0.4s ease;
+  }
+  .glass-card:hover img { filter: brightness(0.85); }
+
+  .glass-card .card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(0,0,0,0.25) 0%, transparent 35%,
+      transparent 65%, rgba(0,0,0,0.6) 100%);
+    opacity: 0; transition: opacity var(--transition);
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 12px;
+  }
+  .glass-card:hover .card-overlay { opacity: 1; }
+
+  .co-top { display: flex; justify-content: space-between; align-items: flex-start; }
+
+  .glass-check {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.6);
+    background: rgba(0,0,0,0.2); backdrop-filter: var(--blur-sm);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .glass-check:hover { border-color: white; background: rgba(0,0,0,0.3); }
+  .glass-check.on {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .glass-check.on::after {
+    content: ''; width: 10px; height: 6px;
+    border-left: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .co-actions { display: flex; gap: 4px; }
+  .co-action {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: rgba(255,255,255,0.1); backdrop-filter: var(--blur-sm);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer; transition: all 0.15s;
+  }
+  .co-action:hover { background: rgba(255,255,255,0.2); }
+  .co-action svg { width: 14px; height: 14px; }
+
+  .co-bottom { display: flex; flex-direction: column; gap: 2px; }
+  .co-name {
+    font-size: 12px; font-weight: 500; color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .co-meta { font-size: 11px; color: rgba(255,255,255,0.6); }
+
+  .glass-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px rgba(37,99,235,0.05);
+  }
+  .glass-card.selected .card-overlay { opacity: 1; }
+
+  /* Doc card */
+  .glass-card.doc-card .doc-inner {
+    height: 160px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.08));
+  }
+  .glass-card.doc-card.vid-card .doc-inner { background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(217,70,239,0.08)); }
+  .glass-card.doc-card.vec-card .doc-inner { background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.08)); }
+  .doc-inner svg { width: 28px; height: 28px; color: var(--text-secondary); }
+  .doc-inner .ext-pill {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 3px 10px; border-radius: var(--radius-pill);
+    background: var(--bg-glass); border: 1px solid var(--border);
+    color: var(--text-secondary); letter-spacing: 0.5px;
+  }
+
+  /* Info Panel */
+  .info-panel {
+    width: 290px; min-width: 290px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: var(--blur);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  .ip-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .ip-head h3 { font-size: 14px; font-weight: 600; }
+  .ip-close {
+    width: 28px; height: 28px; border-radius: 8px; border: none;
+    background: var(--bg-glass); cursor: pointer;
+    color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+  }
+  .ip-close:hover { background: var(--bg-glass-hover); color: var(--text); }
+
+  .ip-preview { padding: 16px 20px; }
+  .ip-preview img {
+    width: 100%; border-radius: var(--radius-sm);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .ip-section { padding: 14px 20px; border-top: 1px solid var(--border); }
+  .ip-section-title {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-tertiary); margin-bottom: 10px;
+  }
+  .ip-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+  .ip-row .k { color: var(--text-secondary); }
+  .ip-row .v { color: var(--text); font-weight: 500; }
+
+  .ip-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .ip-tag {
+    padding: 4px 12px; background: var(--bg-glass);
+    border: 1px solid var(--border); border-radius: var(--radius-pill);
+    font-size: 11px; color: var(--text-secondary);
+  }
+
+  .ip-actions { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .ip-btn {
+    padding: 9px; border-radius: var(--radius-sm);
+    background: var(--bg-glass); border: 1px solid var(--border);
+    font-size: 12px; font-weight: 500; font-family: var(--font);
+    color: var(--text-secondary); cursor: pointer;
+    text-align: center; transition: all var(--transition);
+  }
+  .ip-btn:hover { background: var(--bg-glass-hover); color: var(--text); border-color: var(--border-glass); }
+  .ip-btn.danger:hover { background: rgba(220,38,38,0.08); color: #f87171; border-color: rgba(220,38,38,0.2); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Animations */
+  @keyframes glassIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .glass-card {
+    animation: glassIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+  }
+  .glass-card:nth-child(1) { animation-delay: 0.03s; }
+  .glass-card:nth-child(2) { animation-delay: 0.06s; }
+  .glass-card:nth-child(3) { animation-delay: 0.09s; }
+  .glass-card:nth-child(4) { animation-delay: 0.12s; }
+  .glass-card:nth-child(5) { animation-delay: 0.15s; }
+  .glass-card:nth-child(6) { animation-delay: 0.18s; }
+  .glass-card:nth-child(7) { animation-delay: 0.21s; }
+  .glass-card:nth-child(8) { animation-delay: 0.24s; }
+  .glass-card:nth-child(9) { animation-delay: 0.27s; }
+  .glass-card:nth-child(10) { animation-delay: 0.30s; }
+  .glass-card:nth-child(11) { animation-delay: 0.33s; }
+  .glass-card:nth-child(12) { animation-delay: 0.36s; }
+
+  /* Drop Zone */
+  .dropzone {
+    display: none; position: fixed; inset: 0;
+    background: rgba(14,14,18,0.92); backdrop-filter: var(--blur);
+    z-index: 100; align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .dropzone.active { display: flex; }
+  .dropzone-inner {
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius);
+    padding: 60px 80px; text-align: center;
+    background: var(--accent-soft);
+    animation: drop-pulse 2s infinite;
+  }
+  .dropzone h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-top: 12px; }
+  .dropzone p { font-size: 14px; color: var(--text-secondary); }
+  .dropzone svg { width: 40px; height: 40px; color: var(--accent); }
+
+  @keyframes drop-pulse {
+    0%, 100% { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+    50% { border-color: rgba(37,99,235,0.3); box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="rail">
+  <div class="rail-logo">S</div>
+  <div class="rail-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>
+  <div class="rail-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+  <div class="rail-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg></div>
+  <div class="rail-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg></div>
+  <div class="rail-flex"></div>
+  <div class="rail-avatar">JH</div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sb-search-wrap">
+    <input type="text" class="sb-search" placeholder="Search folders...">
+  </div>
+  <div class="sb-label">Library</div>
+  <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>All Assets<span class="sb-badge">247</span></div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>Images<span class="sb-badge">182</span></div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Videos<span class="sb-badge">34</span></div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Documents<span class="sb-badge">31</span></div>
+  <div class="sb-label">Directories</div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/uploads/blog<span class="sb-badge">89</span></div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/uploads/products<span class="sb-badge">56</span></div>
+  <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/uploads/team<span class="sb-badge">18</span></div>
+</aside>
+
+<main class="main">
+  <div class="header">
+    <h1>Global Assets</h1>
+    <span class="header-count">247 items</span>
+    <div class="header-gap"></div>
+    <button class="upload-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Files
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <button class="glass-pill active">All</button>
+    <button class="glass-pill">Images</button>
+    <button class="glass-pill">Videos</button>
+    <button class="glass-pill">Documents</button>
+    <div class="pill-gap"></div>
+    <div class="search-glass">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search assets...">
+    </div>
+    <button class="glass-icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/></svg>
+    </button>
+    <button class="glass-icon-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="glass-icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="grid-scroll">
+    <div class="grid-area">
+      <div class="masonry" id="masonry"></div>
+    </div>
+
+    <div class="info-panel">
+      <div class="ip-head">
+        <h3>Asset Details</h3>
+        <button class="ip-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="ip-preview"><img src="https://picsum.photos/seed/glass-sel/400/280" alt="Preview"></div>
+      <div class="ip-section">
+        <div class="ip-section-title">File Information</div>
+        <div class="ip-row"><span class="k">Filename</span><span class="v">hero-banner.jpg</span></div>
+        <div class="ip-row"><span class="k">Type</span><span class="v">JPEG Image</span></div>
+        <div class="ip-row"><span class="k">Size</span><span class="v">2.4 MB</span></div>
+        <div class="ip-row"><span class="k">Dimensions</span><span class="v">2400 x 1600</span></div>
+        <div class="ip-row"><span class="k">Modified</span><span class="v">Mar 8, 2026</span></div>
+        <div class="ip-row"><span class="k">Path</span><span class="v">/uploads/blog/</span></div>
+      </div>
+      <div class="ip-section">
+        <div class="ip-section-title">Tags</div>
+        <div class="ip-tags">
+          <span class="ip-tag">hero</span>
+          <span class="ip-tag">banner</span>
+          <span class="ip-tag">blog</span>
+          <span class="ip-tag">featured</span>
+        </div>
+      </div>
+      <div class="ip-actions">
+        <button class="ip-btn">Download</button>
+        <button class="ip-btn">Copy URL</button>
+        <button class="ip-btn">Replace</button>
+        <button class="ip-btn danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const m = document.getElementById('masonry');
+const assets = [
+  { type:'img', seed:'gl1', h:260, name:'hero-banner.jpg', size:'2.4 MB', selected:true },
+  { type:'img', seed:'gl2', h:190, name:'product-shot.png', size:'1.8 MB' },
+  { type:'img', seed:'gl3', h:320, name:'team-photo.jpg', size:'3.1 MB' },
+  { type:'doc', ext:'PDF', cls:'', name:'brand-guide.pdf', size:'5.2 MB' },
+  { type:'img', seed:'gl4', h:180, name:'landscape.jpg', size:'890 KB' },
+  { type:'img', seed:'gl5', h:240, name:'avatar-sarah.png', size:'240 KB' },
+  { type:'img', seed:'gl6', h:300, name:'office-view.jpg', size:'1.6 MB' },
+  { type:'doc', ext:'MP4', cls:'vid-card', name:'promo-video.mp4', size:'24 MB' },
+  { type:'img', seed:'gl7', h:210, name:'sunset-beach.jpg', size:'1.2 MB' },
+  { type:'doc', ext:'SVG', cls:'vec-card', name:'logo-dark.svg', size:'12 KB' },
+  { type:'img', seed:'gl8', h:250, name:'blog-cover.jpg', size:'980 KB' },
+  { type:'img', seed:'gl9', h:340, name:'mountain-lake.jpg', size:'2.8 MB' },
+  { type:'img', seed:'gl10', h:200, name:'food-plating.jpg', size:'1.1 MB' },
+  { type:'img', seed:'gl11', h:280, name:'city-aerial.jpg', size:'2.2 MB' },
+  { type:'img', seed:'gl12', h:220, name:'abstract-art.jpg', size:'780 KB' },
+  { type:'img', seed:'gl13', h:190, name:'portrait-bw.jpg', size:'640 KB' },
+];
+
+assets.forEach(a => {
+  const c = document.createElement('div');
+  if (a.type === 'img') {
+    c.className = `glass-card${a.selected ? ' selected' : ''}`;
+    c.innerHTML = `
+      <img src="https://picsum.photos/seed/${a.seed}/400/${a.h}" style="height:${a.h}px" alt="${a.name}">
+      <div class="card-overlay">
+        <div class="co-top">
+          <div class="glass-check${a.selected ? ' on' : ''}"></div>
+          <div class="co-actions">
+            <button class="co-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button class="co-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            <button class="co-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+          </div>
+        </div>
+        <div class="co-bottom">
+          <span class="co-name">${a.name}</span>
+          <span class="co-meta">${a.size}</span>
+        </div>
+      </div>`;
+  } else {
+    c.className = `glass-card doc-card ${a.cls}`;
+    c.innerHTML = `
+      <div class="doc-inner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        <span class="ext-pill">${a.ext}</span>
+      </div>
+      <div class="card-overlay">
+        <div class="co-top"><div class="glass-check"></div><div class="co-actions"><button class="co-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></div>
+        <div class="co-bottom"><span class="co-name">${a.name}</span><span class="co-meta">${a.size}</span></div>
+      </div>`;
+  }
+  m.appendChild(c);
+});
+</script>
+</body>
+</html>

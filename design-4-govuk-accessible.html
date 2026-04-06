@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sveltia CMS — Design 4: GOV.UK Accessible</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* GOV.UK-inspired color tokens */
+    --govuk-black: #0b0c0c;
+    --govuk-white: #ffffff;
+    --govuk-blue: #1d70b8;
+    --govuk-dark-blue: #003078;
+    --govuk-light-blue: #5694ca;
+    --govuk-link-colour: #1d70b8;
+    --govuk-link-hover: #003078;
+    --govuk-link-visited: #4c2c92;
+    --govuk-red: #d4351c;
+    --govuk-green: #00703c;
+    --govuk-yellow: #ffdd00;
+    --govuk-focus: #ffdd00;
+    --govuk-focus-text: #0b0c0c;
+    --govuk-grey-1: #505a5f;
+    --govuk-grey-2: #b1b4b6;
+    --govuk-grey-3: #f3f2f1;
+    --govuk-grey-4: #f8f8f8;
+    --govuk-border: #b1b4b6;
+    --govuk-text: #0b0c0c;
+    --govuk-secondary-text: #505a5f;
+    /* GOV.UK spacing scale */
+    --govuk-spacing-1: 5px;
+    --govuk-spacing-2: 10px;
+    --govuk-spacing-3: 15px;
+    --govuk-spacing-4: 20px;
+    --govuk-spacing-5: 25px;
+    --govuk-spacing-6: 30px;
+    --govuk-spacing-7: 40px;
+    --govuk-spacing-8: 50px;
+    --govuk-spacing-9: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', 'GDS Transport', Arial, sans-serif;
+    font-size: 19px;
+    line-height: 1.47;
+    color: var(--govuk-text);
+    background: var(--govuk-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Focus styles (critical for accessibility) ── */
+  :focus {
+    outline: 3px solid var(--govuk-focus);
+    outline-offset: 0;
+    background: var(--govuk-focus);
+    color: var(--govuk-focus-text);
+    box-shadow: 0 -2px var(--govuk-focus), 0 4px var(--govuk-focus-text);
+    text-decoration: none;
+  }
+
+  /* ── Header ── */
+  .govuk-header {
+    background: var(--govuk-black);
+    border-bottom: 10px solid var(--govuk-blue);
+    padding: 0;
+  }
+
+  .govuk-header__container {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-6);
+    position: relative;
+  }
+
+  .govuk-header__logotype {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .govuk-header__logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--govuk-white);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--govuk-black);
+  }
+
+  .govuk-header__product-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--govuk-white);
+    letter-spacing: -0.3px;
+  }
+
+  .govuk-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: var(--govuk-spacing-7);
+  }
+
+  .govuk-header__nav-item {
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-4);
+    color: var(--govuk-white);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.1s;
+  }
+
+  .govuk-header__nav-item:hover {
+    border-bottom-color: var(--govuk-grey-2);
+  }
+
+  .govuk-header__nav-item--active {
+    border-bottom-color: var(--govuk-blue);
+  }
+
+  .govuk-header__nav-item:focus {
+    color: var(--govuk-focus-text);
+    border-bottom-color: transparent;
+  }
+
+  .govuk-header__right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--govuk-spacing-3);
+  }
+
+  .govuk-header__user {
+    color: var(--govuk-white);
+    font-size: 16px;
+  }
+
+  /* ── Phase banner ── */
+  .govuk-phase-banner {
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-6);
+    border-bottom: 1px solid var(--govuk-border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .govuk-phase-banner__content {
+    display: flex;
+    align-items: center;
+    gap: var(--govuk-spacing-2);
+    font-size: 16px;
+    color: var(--govuk-secondary-text);
+  }
+
+  .govuk-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--govuk-white);
+    background: var(--govuk-blue);
+  }
+
+  .govuk-tag--green { background: var(--govuk-green); }
+  .govuk-tag--yellow { background: #b58840; color: var(--govuk-white); }
+  .govuk-tag--grey { background: var(--govuk-grey-1); }
+  .govuk-tag--red { background: var(--govuk-red); }
+
+  /* ── Layout ── */
+  .govuk-layout {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 70px);
+  }
+
+  /* ── Side Navigation ── */
+  .govuk-side-nav {
+    width: 260px;
+    padding: var(--govuk-spacing-6) var(--govuk-spacing-6) var(--govuk-spacing-6) 0;
+    border-right: 1px solid var(--govuk-border);
+    flex-shrink: 0;
+  }
+
+  .govuk-side-nav__heading {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--govuk-secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--govuk-spacing-2);
+    padding-left: var(--govuk-spacing-3);
+  }
+
+  .govuk-side-nav__list {
+    list-style: none;
+    margin-bottom: var(--govuk-spacing-6);
+  }
+
+  .govuk-side-nav__item {
+    border-left: 4px solid transparent;
+  }
+
+  .govuk-side-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-3);
+    color: var(--govuk-link-colour);
+    font-size: 16px;
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+    text-underline-offset: .1em;
+    transition: color 0.1s;
+  }
+
+  .govuk-side-nav__link:hover {
+    color: var(--govuk-link-hover);
+    text-decoration-thickness: max(3px, .1875rem);
+  }
+
+  .govuk-side-nav__link:focus {
+    text-decoration: none;
+  }
+
+  .govuk-side-nav__item--active {
+    border-left-color: var(--govuk-blue);
+    background: var(--govuk-grey-3);
+  }
+
+  .govuk-side-nav__item--active .govuk-side-nav__link {
+    color: var(--govuk-text);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .govuk-side-nav__count {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--govuk-secondary-text);
+  }
+
+  /* ── Main Content ── */
+  .govuk-main {
+    flex: 1;
+    padding: var(--govuk-spacing-6);
+    padding-left: var(--govuk-spacing-7);
+  }
+
+  /* ── Heading & caption ── */
+  .govuk-caption-l {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--govuk-secondary-text);
+    margin-bottom: var(--govuk-spacing-1);
+  }
+
+  .govuk-heading-l {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.11;
+    margin-bottom: var(--govuk-spacing-2);
+  }
+
+  .govuk-body {
+    font-size: 19px;
+    color: var(--govuk-secondary-text);
+    margin-bottom: var(--govuk-spacing-6);
+  }
+
+  /* ── Button ── */
+  .govuk-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px 7px;
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--govuk-white);
+    background: var(--govuk-green);
+    border: 2px solid transparent;
+    border-bottom: 3px solid #002d18;
+    cursor: pointer;
+    text-decoration: none;
+    -webkit-appearance: none;
+  }
+
+  .govuk-button:hover {
+    background: #005a30;
+  }
+
+  .govuk-button:active {
+    border-bottom-width: 1px;
+    margin-top: 2px;
+  }
+
+  .govuk-button:focus {
+    border-color: var(--govuk-focus);
+    box-shadow: 0 2px 0 var(--govuk-focus-text);
+    background: var(--govuk-green);
+  }
+
+  .govuk-button--secondary {
+    background: var(--govuk-grey-3);
+    color: var(--govuk-text);
+    border-bottom-color: var(--govuk-grey-1);
+  }
+
+  .govuk-button--secondary:hover {
+    background: #dbdad9;
+  }
+
+  /* ── Actions bar ── */
+  .govuk-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--govuk-spacing-4);
+  }
+
+  .govuk-actions__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--govuk-spacing-3);
+  }
+
+  /* ── Select ── */
+  .govuk-select {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 5px 30px 5px 10px;
+    border: 2px solid var(--govuk-text);
+    background: var(--govuk-white);
+    color: var(--govuk-text);
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230b0c0c' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    cursor: pointer;
+  }
+
+  /* ── Input ── */
+  .govuk-input {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 5px 10px;
+    border: 2px solid var(--govuk-text);
+    color: var(--govuk-text);
+    width: 200px;
+  }
+
+  .govuk-input:focus {
+    box-shadow: inset 0 0 0 2px;
+  }
+
+  /* ── Table ── */
+  .govuk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--govuk-spacing-6);
+  }
+
+  .govuk-table__header {
+    text-align: left;
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-4) var(--govuk-spacing-2) 0;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--govuk-text);
+    color: var(--govuk-text);
+    vertical-align: bottom;
+  }
+
+  .govuk-table__cell {
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-4) var(--govuk-spacing-2) 0;
+    font-size: 16px;
+    border-bottom: 1px solid var(--govuk-border);
+    vertical-align: top;
+  }
+
+  .govuk-table__row:hover {
+    background: var(--govuk-grey-4);
+  }
+
+  .govuk-link {
+    color: var(--govuk-link-colour);
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+    text-underline-offset: .1578em;
+    font-weight: 600;
+  }
+
+  .govuk-link:hover {
+    color: var(--govuk-link-hover);
+    text-decoration-thickness: max(3px, .1875rem);
+  }
+
+  .govuk-link:focus {
+    text-decoration: none;
+  }
+
+  .govuk-link:visited {
+    color: var(--govuk-link-visited);
+  }
+
+  .govuk-body-s {
+    font-size: 16px;
+    color: var(--govuk-secondary-text);
+  }
+
+  /* ── Inset text ── */
+  .govuk-inset-text {
+    border-left: 10px solid var(--govuk-border);
+    padding: var(--govuk-spacing-3) var(--govuk-spacing-4);
+    margin-bottom: var(--govuk-spacing-6);
+    font-size: 19px;
+    clear: both;
+  }
+
+  /* ── Pagination ── */
+  .govuk-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--govuk-border);
+    padding-top: var(--govuk-spacing-3);
+  }
+
+  .govuk-pagination__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--govuk-link-colour);
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+  }
+
+  .govuk-pagination__link:hover {
+    text-decoration-thickness: max(3px, .1875rem);
+    color: var(--govuk-link-hover);
+  }
+
+  .govuk-pagination__info {
+    font-size: 16px;
+    color: var(--govuk-secondary-text);
+  }
+
+  /* ── Footer ── */
+  .govuk-footer {
+    border-top: 1px solid var(--govuk-border);
+    padding: var(--govuk-spacing-6);
+    margin-top: var(--govuk-spacing-9);
+    background: var(--govuk-grey-3);
+  }
+
+  .govuk-footer__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 16px;
+    color: var(--govuk-secondary-text);
+  }
+
+  /* ── Skip link (accessibility) ── */
+  .govuk-skip-link {
+    position: absolute;
+    left: -9999px;
+    padding: var(--govuk-spacing-2) var(--govuk-spacing-3);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--govuk-focus-text);
+    background: var(--govuk-focus);
+    text-decoration: underline;
+    z-index: 999;
+  }
+
+  .govuk-skip-link:focus {
+    left: 0;
+    top: 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    body { font-size: 16px; }
+    .govuk-side-nav { display: none; }
+    .govuk-main { padding: var(--govuk-spacing-4); }
+    .govuk-heading-l { font-size: 27px; }
+    .govuk-caption-l { font-size: 18px; }
+    .govuk-header__nav { display: none; }
+    .govuk-actions { flex-direction: column; gap: var(--govuk-spacing-3); align-items: flex-start; }
+    .govuk-table { font-size: 14px; }
+    .govuk-button { font-size: 16px; }
+    .govuk-body { font-size: 16px; }
+    .govuk-phase-banner { padding-left: var(--govuk-spacing-4); padding-right: var(--govuk-spacing-4); }
+    .govuk-header__container { padding-left: var(--govuk-spacing-4); padding-right: var(--govuk-spacing-4); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Skip Link (Accessibility) ── -->
+<a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+<!-- ── Header ── -->
+<header class="govuk-header" role="banner">
+  <div class="govuk-header__container">
+    <div class="govuk-header__logotype">
+      <div class="govuk-header__logo-icon">S</div>
+      <span class="govuk-header__product-name">Sveltia CMS</span>
+    </div>
+    <nav class="govuk-header__nav" aria-label="Main navigation">
+      <a class="govuk-header__nav-item govuk-header__nav-item--active" href="#">Contents</a>
+      <a class="govuk-header__nav-item" href="#">Media</a>
+      <a class="govuk-header__nav-item" href="#">Workflow</a>
+      <a class="govuk-header__nav-item" href="#">Settings</a>
+    </nav>
+    <div class="govuk-header__right">
+      <span class="govuk-header__user">jose.hernando</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Phase banner ── -->
+<div class="govuk-phase-banner">
+  <div class="govuk-phase-banner__content">
+    <strong class="govuk-tag">Beta</strong>
+    <span>This is a new service. <a href="#" class="govuk-link">Give feedback</a> to help improve it.</span>
+  </div>
+</div>
+
+<!-- ── Layout ── -->
+<div class="govuk-layout">
+  <!-- Side Navigation -->
+  <nav class="govuk-side-nav" aria-label="Collection navigation">
+    <p class="govuk-side-nav__heading">Collections</p>
+    <ul class="govuk-side-nav__list">
+      <li class="govuk-side-nav__item govuk-side-nav__item--active">
+        <a class="govuk-side-nav__link" href="#" aria-current="page">
+          Blog Posts
+          <span class="govuk-side-nav__count">24</span>
+        </a>
+      </li>
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Pages
+          <span class="govuk-side-nav__count">8</span>
+        </a>
+      </li>
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Authors
+          <span class="govuk-side-nav__count">4</span>
+        </a>
+      </li>
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Projects
+          <span class="govuk-side-nav__count">12</span>
+        </a>
+      </li>
+    </ul>
+
+    <p class="govuk-side-nav__heading">Data</p>
+    <ul class="govuk-side-nav__list">
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Categories
+          <span class="govuk-side-nav__count">6</span>
+        </a>
+      </li>
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Tags
+          <span class="govuk-side-nav__count">18</span>
+        </a>
+      </li>
+      <li class="govuk-side-nav__item">
+        <a class="govuk-side-nav__link" href="#">
+          Navigation
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="govuk-main" id="main-content" role="main">
+    <span class="govuk-caption-l">Collections</span>
+    <h1 class="govuk-heading-l">Blog Posts</h1>
+    <p class="govuk-body">Manage your blog content. You have 24 entries across 3 languages.</p>
+
+    <!-- Inset text -->
+    <div class="govuk-inset-text">
+      2 entries are in draft status and 1 entry is awaiting review.
+    </div>
+
+    <!-- Actions -->
+    <div class="govuk-actions">
+      <div class="govuk-actions__filters">
+        <label for="status-filter" class="govuk-body-s" style="margin:0;">Status:</label>
+        <select id="status-filter" class="govuk-select">
+          <option>All statuses</option>
+          <option>Published</option>
+          <option>Draft</option>
+          <option>In review</option>
+        </select>
+        <label for="search-filter" class="govuk-body-s" style="margin:0;">Search:</label>
+        <input id="search-filter" class="govuk-input" type="text" placeholder="Filter entries">
+      </div>
+      <a href="#" class="govuk-button" role="button">
+        Create new entry
+      </a>
+    </div>
+
+    <!-- Table -->
+    <table class="govuk-table">
+      <thead>
+        <tr>
+          <th scope="col" class="govuk-table__header">Title</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+          <th scope="col" class="govuk-table__header">Category</th>
+          <th scope="col" class="govuk-table__header">Last updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Getting Started with Sveltia CMS</a>
+            <br><span class="govuk-body-s">getting-started-sveltia-cms</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Published</strong></td>
+          <td class="govuk-table__cell">Tutorial</td>
+          <td class="govuk-table__cell">8 March 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Migrating from Netlify CMS</a>
+            <br><span class="govuk-body-s">migrating-from-netlify-cms</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Published</strong></td>
+          <td class="govuk-table__cell">Guide</td>
+          <td class="govuk-table__cell">7 March 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Understanding i18n File Structures</a>
+            <br><span class="govuk-body-s">understanding-i18n-file-structures</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">Draft</strong></td>
+          <td class="govuk-table__cell">Technical</td>
+          <td class="govuk-table__cell">6 March 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">AI-Powered Content Translation</a>
+            <br><span class="govuk-body-s">ai-powered-content-translation</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag">In review</strong></td>
+          <td class="govuk-table__cell">Feature</td>
+          <td class="govuk-table__cell">5 March 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Best Practices for Git-Based CMS</a>
+            <br><span class="govuk-body-s">best-practices-git-based-cms</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Published</strong></td>
+          <td class="govuk-table__cell">Opinion</td>
+          <td class="govuk-table__cell">3 March 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Working with Custom Widgets</a>
+            <br><span class="govuk-body-s">working-custom-widgets</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">Draft</strong></td>
+          <td class="govuk-table__cell">Tutorial</td>
+          <td class="govuk-table__cell">28 February 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Media Library Deep Dive</a>
+            <br><span class="govuk-body-s">media-library-deep-dive</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Published</strong></td>
+          <td class="govuk-table__cell">Technical</td>
+          <td class="govuk-table__cell">25 February 2026</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="#">Deploying to Cloudflare Pages</a>
+            <br><span class="govuk-body-s">deploying-cloudflare-pages</span>
+          </td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Published</strong></td>
+          <td class="govuk-table__cell">Guide</td>
+          <td class="govuk-table__cell">22 February 2026</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav class="govuk-pagination" aria-label="Pagination">
+      <span class="govuk-pagination__info">Showing 1 to 8 of 24 entries</span>
+      <div style="display: flex; gap: 20px;">
+        <span style="color: var(--govuk-grey-2); font-size: 18px; font-weight: 600;">Previous</span>
+        <a class="govuk-pagination__link" href="#">
+          Next
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 1l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </nav>
+  </main>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="govuk-footer" role="contentinfo">
+  <div class="govuk-footer__content">
+    Powered by Sveltia CMS · Git-based content management · Built with accessibility in mind
+  </div>
+</footer>
+
+</body>
+</html>

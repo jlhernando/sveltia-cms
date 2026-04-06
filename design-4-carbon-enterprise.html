@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 4: Carbon Enterprise — Sveltia CMS Asset Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* IBM Carbon-inspired tokens */
+    --cds-interactive: hsl(211, 84%, 54%);
+    --cds-interactive-hover: hsl(211, 84%, 46%);
+    --cds-text-primary: #161616;
+    --cds-text-secondary: #525252;
+    --cds-text-placeholder: #a8a8a8;
+    --cds-text-on-color: #ffffff;
+    --cds-bg: #ffffff;
+    --cds-layer-01: #f4f4f4;
+    --cds-layer-02: #e0e0e0;
+    --cds-field: #f4f4f4;
+    --cds-border-subtle: #e0e0e0;
+    --cds-border-strong: #8d8d8d;
+    --cds-support-error: #da1e28;
+    --cds-support-success: #198038;
+    --cds-support-warning: #f1c21b;
+    --cds-support-info: #0043ce;
+    --cds-bg-sidebar: #161616;
+    --cds-bg-rail: #0f0f0f;
+    --cds-layer-active: #c6c6c6;
+    --cds-focus: var(--cds-interactive);
+    --cds-spacing-03: 8px;
+    --cds-spacing-05: 16px;
+    --cds-spacing-06: 24px;
+    --cds-spacing-07: 32px;
+    --font: 'Inter', 'IBM Plex Sans', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--cds-bg);
+    color: var(--cds-text-primary);
+    height: 100vh; overflow: hidden;
+    display: flex; font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Rail */
+  .rail {
+    width: 48px; min-width: 48px;
+    background: var(--cds-bg-rail);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 0; gap: 2px;
+  }
+  .rail-logo {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .rail-logo svg { width: 24px; height: 24px; color: white; }
+  .rail-item {
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    color: #6f6f6f; cursor: pointer;
+    transition: all 0.1s; position: relative;
+  }
+  .rail-item:hover { background: #353535; color: #c6c6c6; }
+  .rail-item.active { background: #393939; color: white; }
+  .rail-item.active::after {
+    content: ''; position: absolute; left: 0; top: 0;
+    width: 3px; height: 100%; background: var(--cds-interactive);
+  }
+  .rail-item svg { width: 20px; height: 20px; }
+  .rail-flex { flex: 1; }
+  .rail-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #393939; display: flex; align-items: center;
+    justify-content: center; color: #c6c6c6;
+    font-size: 10px; font-weight: 600;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 200px; min-width: 200px;
+    background: var(--cds-bg-sidebar);
+    display: flex; flex-direction: column;
+    border-right: 1px solid #393939;
+  }
+  .sb-header {
+    padding: var(--cds-spacing-05);
+    border-bottom: 1px solid #393939;
+  }
+  .sb-search {
+    width: 100%; padding: 0 var(--cds-spacing-05);
+    height: 32px; background: #262626;
+    border: none; border-bottom: 1px solid #6f6f6f;
+    color: #c6c6c6; font-size: 12px; font-family: var(--font);
+    outline: none;
+  }
+  .sb-search::placeholder { color: #6f6f6f; }
+  .sb-search:focus { border-bottom-color: var(--cds-interactive); outline: 2px solid var(--cds-interactive); outline-offset: -2px; }
+
+  .sb-label {
+    padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-03);
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; color: #6f6f6f;
+  }
+  .sb-nav-item {
+    display: flex; align-items: center; gap: var(--cds-spacing-03);
+    height: 32px; padding: 0 var(--cds-spacing-05);
+    color: #c6c6c6; font-size: 13px; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .sb-nav-item:hover { background: #262626; }
+  .sb-nav-item.active { background: #393939; color: white; font-weight: 500; }
+  .sb-nav-item svg { width: 16px; height: 16px; opacity: 0.7; }
+  .sb-nav-count {
+    margin-left: auto; font-size: 11px; color: #6f6f6f;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    display: flex; align-items: center; gap: 4px;
+    padding: 10px var(--cds-spacing-06);
+    font-size: 12px; color: var(--cds-text-secondary);
+    border-bottom: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer-01);
+  }
+  .breadcrumb a { color: var(--cds-interactive); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb svg { width: 12px; height: 12px; color: var(--cds-text-placeholder); }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; align-items: center;
+    padding: 0;
+    border-bottom: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer-01);
+    height: 48px;
+  }
+  .tb-title {
+    font-size: 14px; font-weight: 600;
+    padding: 0 var(--cds-spacing-06);
+  }
+  .tb-count {
+    font-size: 13px; color: var(--cds-text-secondary);
+  }
+  .tb-sep {
+    width: 1px; height: 24px; background: var(--cds-border-subtle);
+    margin: 0 4px;
+  }
+  .tb-flex { flex: 1; }
+
+  .tb-search {
+    display: flex; align-items: center;
+    height: 48px; padding: 0 var(--cds-spacing-05);
+    border-left: 1px solid var(--cds-border-subtle);
+    gap: 6px; min-width: 240px;
+  }
+  .tb-search svg { width: 16px; height: 16px; color: var(--cds-text-secondary); }
+  .tb-search input {
+    border: none; background: none; outline: none;
+    font-size: 13px; font-family: var(--font); color: var(--cds-text-primary);
+    width: 100%;
+  }
+  .tb-search input::placeholder { color: var(--cds-text-placeholder); }
+
+  .tb-btn {
+    height: 48px; padding: 0 var(--cds-spacing-05);
+    border: none; border-left: 1px solid var(--cds-border-subtle);
+    background: transparent; color: var(--cds-text-secondary);
+    font-size: 13px; font-family: var(--font);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: background 0.1s;
+  }
+  .tb-btn:hover { background: #e8e8e8; }
+  .tb-btn.active { color: var(--cds-interactive); }
+  .tb-btn svg { width: 16px; height: 16px; }
+
+  .tb-upload {
+    height: 48px; padding: 0 var(--cds-spacing-06);
+    border: none; border-left: 1px solid var(--cds-border-subtle);
+    background: var(--cds-interactive); color: white;
+    font-size: 13px; font-weight: 500; font-family: var(--font);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: background 0.1s;
+  }
+  .tb-upload:hover { background: var(--cds-interactive-hover); }
+  .tb-upload svg { width: 16px; height: 16px; }
+
+  /* Content Tabs */
+  .content-tabs {
+    display: flex; border-bottom: 1px solid var(--cds-border-subtle);
+    padding: 0 var(--cds-spacing-06);
+  }
+  .ct-tab {
+    padding: var(--cds-spacing-03) var(--cds-spacing-05);
+    font-size: 13px; color: var(--cds-text-secondary);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.1s; font-weight: 500;
+  }
+  .ct-tab:hover { color: var(--cds-text-primary); background: var(--cds-layer-01); }
+  .ct-tab.active {
+    color: var(--cds-text-primary);
+    border-bottom-color: var(--cds-interactive);
+    font-weight: 600;
+  }
+
+  /* Grid */
+  .grid-scroll {
+    flex: 1; overflow-y: auto;
+    padding: var(--cds-spacing-05) var(--cds-spacing-06);
+    display: flex; gap: var(--cds-spacing-05);
+    background: var(--cds-layer-01);
+  }
+  .grid-area { flex: 1; }
+
+  /* Structured grid - Carbon style: no rounded corners, sharp, data-dense */
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--cds-border-subtle);
+  }
+
+  .tile {
+    background: var(--cds-bg);
+    position: relative; cursor: pointer;
+    overflow: hidden; transition: all 0.1s;
+    /* No border-radius - Carbon is sharp */
+  }
+  .tile img {
+    width: 100%; aspect-ratio: 4/3;
+    object-fit: cover; display: block;
+  }
+  .tile-info {
+    padding: var(--cds-spacing-03) var(--cds-spacing-05);
+    border-top: 1px solid var(--cds-border-subtle);
+    background: var(--cds-bg);
+  }
+  .tile-name {
+    font-size: 12px; font-weight: 500; color: var(--cds-text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tile-meta {
+    font-size: 11px; color: var(--cds-text-secondary);
+    display: flex; gap: 8px; margin-top: 2px;
+  }
+
+  .tile .tile-hover {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0; transition: opacity 0.1s;
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 8px;
+  }
+  .tile:hover .tile-hover { opacity: 1; }
+  .tile:hover { outline: 2px solid var(--cds-interactive); outline-offset: -2px; }
+
+  .th-top { display: flex; justify-content: space-between; }
+
+  .th-checkbox {
+    width: 18px; height: 18px;
+    border: 1px solid white; background: rgba(0,0,0,0.2);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    /* Carbon checkboxes are square */
+  }
+  .th-checkbox.on { background: var(--cds-interactive); border-color: var(--cds-interactive); }
+  .th-checkbox.on::after {
+    content: ''; width: 8px; height: 5px;
+    border-left: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .th-actions { display: flex; gap: 2px; }
+  .th-action {
+    width: 32px; height: 32px;
+    background: rgba(22,22,22,0.7); border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer; transition: background 0.1s;
+  }
+  .th-action:hover { background: var(--cds-interactive); }
+  .th-action svg { width: 16px; height: 16px; }
+
+  .tile.selected { outline: 2px solid var(--cds-interactive); outline-offset: -2px; }
+  .tile.selected .tile-hover { opacity: 1; }
+
+  /* Doc tile */
+  .tile.doc-tile .doc-ph {
+    aspect-ratio: 4/3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px; background: var(--cds-layer-01);
+  }
+  .doc-ph svg { width: 32px; height: 32px; color: var(--cds-text-secondary); }
+  .doc-ph .doc-ext {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px; background: var(--cds-layer-02);
+    color: var(--cds-text-secondary); text-transform: uppercase;
+  }
+
+  /* Data Table Summary Row (Carbon pattern) */
+  .data-summary {
+    display: flex; gap: 1px; margin-bottom: var(--cds-spacing-05);
+    background: var(--cds-border-subtle);
+  }
+  .data-card {
+    flex: 1; background: var(--cds-bg);
+    padding: var(--cds-spacing-05);
+  }
+  .data-card-label {
+    font-size: 11px; color: var(--cds-text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .data-card-value {
+    font-size: 24px; font-weight: 600;
+    color: var(--cds-text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .data-card-sub {
+    font-size: 12px; color: var(--cds-text-secondary); margin-top: 2px;
+  }
+
+  /* Info Panel */
+  .info-panel {
+    width: 280px; min-width: 280px;
+    background: var(--cds-bg);
+    border-left: 1px solid var(--cds-border-subtle);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  .ip-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--cds-spacing-05);
+    border-bottom: 1px solid var(--cds-border-subtle);
+    height: 48px;
+  }
+  .ip-head h3 { font-size: 14px; font-weight: 600; }
+  .ip-close {
+    width: 32px; height: 32px; border: none;
+    background: none; cursor: pointer; color: var(--cds-text-secondary);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ip-close:hover { background: var(--cds-layer-01); }
+
+  .ip-preview { background: var(--cds-layer-01); }
+  .ip-preview img { width: 100%; display: block; }
+
+  .ip-section {
+    padding: var(--cds-spacing-05);
+    border-bottom: 1px solid var(--cds-border-subtle);
+  }
+  .ip-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--cds-text-secondary);
+    margin-bottom: 8px;
+  }
+  .ip-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; font-size: 13px;
+  }
+  .ip-row .k { color: var(--cds-text-secondary); }
+  .ip-row .v { color: var(--cds-text-primary); font-weight: 500; }
+
+  .ip-actions {
+    padding: var(--cds-spacing-05);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .ip-btn {
+    padding: 8px; border: none;
+    background: var(--cds-layer-01);
+    font-size: 12px; font-weight: 500; font-family: var(--font);
+    color: var(--cds-text-secondary); cursor: pointer;
+    text-align: center; transition: background 0.1s;
+    /* Carbon: no border-radius */
+  }
+  .ip-btn:hover { background: var(--cds-layer-02); color: var(--cds-text-primary); }
+  .ip-btn.danger:hover { background: #fff1f1; color: var(--cds-support-error); }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--cds-layer-01); }
+  ::-webkit-scrollbar-thumb { background: var(--cds-border-subtle); }
+
+  @keyframes carbonFade { from { opacity: 0; } to { opacity: 1; } }
+  .tile { animation: carbonFade 0.15s ease backwards; }
+  .tile:nth-child(n) { animation-delay: calc(0.02s * var(--i, 0)); }
+</style>
+</head>
+<body>
+
+<nav class="rail">
+  <div class="rail-logo"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 2L2 9v14l14 7 14-7V9L16 2zm0 2.5L27 10l-11 5.5L5 10l11-5.5z"/></svg></div>
+  <div class="rail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>
+  <div class="rail-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+  <div class="rail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg></div>
+  <div class="rail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg></div>
+  <div class="rail-flex"></div>
+  <div class="rail-avatar">JH</div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sb-header">
+    <input type="text" class="sb-search" placeholder="Find assets...">
+  </div>
+  <div class="sb-label">Asset Types</div>
+  <div class="sb-nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>All Assets<span class="sb-nav-count">247</span></div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>Images<span class="sb-nav-count">182</span></div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Videos<span class="sb-nav-count">34</span></div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Documents<span class="sb-nav-count">31</span></div>
+  <div class="sb-label">Directories</div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/uploads/blog<span class="sb-nav-count">89</span></div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/uploads/products<span class="sb-nav-count">56</span></div>
+  <div class="sb-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>/static/icons<span class="sb-nav-count">42</span></div>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">Assets</a>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,6 15,12 9,18"/></svg>
+    <span>All Assets</span>
+  </div>
+
+  <div class="toolbar">
+    <span class="tb-title">Global Assets</span>
+    <span class="tb-count">&nbsp;(247)</span>
+    <div class="tb-flex"></div>
+    <div class="tb-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search assets...">
+    </div>
+    <button class="tb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h6"/></svg>
+      Filter
+    </button>
+    <button class="tb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/></svg>
+      Sort
+    </button>
+    <button class="tb-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="tb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </button>
+    <button class="tb-upload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload
+    </button>
+  </div>
+
+  <div class="content-tabs">
+    <div class="ct-tab active">All</div>
+    <div class="ct-tab">Images</div>
+    <div class="ct-tab">Videos</div>
+    <div class="ct-tab">Documents</div>
+    <div class="ct-tab">Audio</div>
+  </div>
+
+  <div class="grid-scroll">
+    <div class="grid-area">
+      <!-- Data summary -->
+      <div class="data-summary">
+        <div class="data-card"><div class="data-card-label">Total Assets</div><div class="data-card-value">247</div><div class="data-card-sub">+12 this week</div></div>
+        <div class="data-card"><div class="data-card-label">Images</div><div class="data-card-value">182</div><div class="data-card-sub">73.7%</div></div>
+        <div class="data-card"><div class="data-card-label">Videos</div><div class="data-card-value">34</div><div class="data-card-sub">13.8%</div></div>
+        <div class="data-card"><div class="data-card-label">Storage Used</div><div class="data-card-value">1.8 GB</div><div class="data-card-sub">of 5 GB</div></div>
+      </div>
+
+      <div class="asset-grid" id="grid"></div>
+    </div>
+
+    <div class="info-panel">
+      <div class="ip-head">
+        <h3>Properties</h3>
+        <button class="ip-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="ip-preview"><img src="https://picsum.photos/seed/carbon-sel/400/260" alt="Preview"></div>
+      <div class="ip-section">
+        <div class="ip-label">File Properties</div>
+        <div class="ip-row"><span class="k">Name</span><span class="v">hero-banner.jpg</span></div>
+        <div class="ip-row"><span class="k">Format</span><span class="v">JPEG</span></div>
+        <div class="ip-row"><span class="k">File size</span><span class="v">2.4 MB</span></div>
+        <div class="ip-row"><span class="k">Dimensions</span><span class="v">2400 x 1600 px</span></div>
+        <div class="ip-row"><span class="k">Modified</span><span class="v">2026-03-08</span></div>
+        <div class="ip-row"><span class="k">Path</span><span class="v">/uploads/blog/</span></div>
+      </div>
+      <div class="ip-section">
+        <div class="ip-label">References</div>
+        <div class="ip-row"><span class="k">Blog: Getting Started</span></div>
+        <div class="ip-row"><span class="k">Blog: Launch Day</span></div>
+      </div>
+      <div class="ip-actions">
+        <button class="ip-btn">Download</button>
+        <button class="ip-btn">Copy URL</button>
+        <button class="ip-btn">Replace</button>
+        <button class="ip-btn danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const grid = document.getElementById('grid');
+const items = [
+  { type:'img', seed:'c1', name:'hero-banner.jpg', size:'2.4 MB', dim:'2400x1600', selected:true },
+  { type:'img', seed:'c2', name:'product-shot.png', size:'1.8 MB', dim:'1800x1200' },
+  { type:'img', seed:'c3', name:'team-photo.jpg', size:'3.1 MB', dim:'3000x2000' },
+  { type:'doc', ext:'PDF', name:'brand-guide.pdf', size:'5.2 MB', dim:'—' },
+  { type:'img', seed:'c4', name:'landscape.jpg', size:'890 KB', dim:'1920x1080' },
+  { type:'img', seed:'c5', name:'avatar-sarah.png', size:'240 KB', dim:'400x400' },
+  { type:'img', seed:'c6', name:'office-view.jpg', size:'1.6 MB', dim:'2560x1440' },
+  { type:'doc', ext:'MP4', name:'promo-video.mp4', size:'24 MB', dim:'1920x1080' },
+  { type:'img', seed:'c7', name:'sunset-beach.jpg', size:'1.2 MB', dim:'2000x1333' },
+  { type:'doc', ext:'SVG', name:'logo-dark.svg', size:'12 KB', dim:'—' },
+  { type:'img', seed:'c8', name:'blog-cover.jpg', size:'980 KB', dim:'1600x900' },
+  { type:'img', seed:'c9', name:'mountain-lake.jpg', size:'2.8 MB', dim:'3200x2400' },
+  { type:'img', seed:'c10', name:'food-plating.jpg', size:'1.1 MB', dim:'1800x1200' },
+  { type:'img', seed:'c11', name:'city-aerial.jpg', size:'2.2 MB', dim:'2560x1700' },
+  { type:'img', seed:'c12', name:'abstract-art.jpg', size:'780 KB', dim:'1200x800' },
+  { type:'img', seed:'c13', name:'portrait-bw.jpg', size:'640 KB', dim:'800x1200' },
+];
+
+items.forEach((item, i) => {
+  const t = document.createElement('div');
+  t.style.setProperty('--i', i);
+  if (item.type === 'img') {
+    t.className = `tile${item.selected ? ' selected' : ''}`;
+    t.innerHTML = `
+      <img src="https://picsum.photos/seed/${item.seed}/400/300" alt="${item.name}">
+      <div class="tile-info"><div class="tile-name">${item.name}</div><div class="tile-meta"><span>${item.size}</span><span>${item.dim}</span></div></div>
+      <div class="tile-hover">
+        <div class="th-top">
+          <div class="th-checkbox${item.selected ? ' on' : ''}"></div>
+          <div class="th-actions">
+            <button class="th-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button class="th-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            <button class="th-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <button class="th-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    t.className = 'tile doc-tile';
+    t.innerHTML = `
+      <div class="doc-ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        <span class="doc-ext">${item.ext}</span>
+      </div>
+      <div class="tile-info"><div class="tile-name">${item.name}</div><div class="tile-meta"><span>${item.size}</span></div></div>
+      <div class="tile-hover">
+        <div class="th-top"><div class="th-checkbox"></div><div class="th-actions"><button class="th-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></div>
+      </div>`;
+  }
+  grid.appendChild(t);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sveltia CMS — Design 5: Glassmorphism Modern</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Glass tokens */
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-bg-strong: rgba(255, 255, 255, 0.88);
+    --glass-bg-sidebar: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --glass-border-subtle: rgba(255, 255, 255, 0.25);
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
+    --glass-shadow-hover: 0 12px 40px rgba(31, 38, 135, 0.18);
+    --glass-blur: 20px;
+    --glass-blur-strong: 40px;
+    /* Color tokens */
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --text-tertiary: #8888a8;
+    --text-on-accent: #ffffff;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-light: rgba(99, 102, 241, 0.12);
+    --accent-lighter: rgba(99, 102, 241, 0.06);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --danger: #ef4444;
+    --surface: rgba(255, 255, 255, 0.6);
+    --surface-hover: rgba(255, 255, 255, 0.85);
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Animated gradient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(79, 172, 254, 0.2) 0%, transparent 50%);
+    z-index: 0;
+    animation: gradient-shift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes gradient-shift {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+
+  /* ── Shell ── */
+  .glass-shell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .glass-sidebar {
+    width: 260px;
+    background: var(--glass-bg-sidebar);
+    backdrop-filter: blur(var(--glass-blur-strong));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: var(--space-5);
+  }
+
+  .glass-sidebar__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .glass-sidebar__logo {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), #a855f7);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+
+  .glass-sidebar__brand {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+  }
+
+  .glass-sidebar__project {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .glass-sidebar__section {
+    margin-bottom: var(--space-6);
+  }
+
+  .glass-sidebar__label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-2);
+    padding-left: var(--space-3);
+  }
+
+  .glass-sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    margin-bottom: 2px;
+  }
+
+  .glass-sidebar__item:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  .glass-sidebar__item--active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .glass-sidebar__item-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .glass-sidebar__item-count {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: rgba(0,0,0,0.05);
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+  }
+
+  .glass-sidebar__item--active .glass-sidebar__item-count {
+    color: var(--accent);
+    background: rgba(99, 102, 241, 0.15);
+  }
+
+  .glass-sidebar__spacer { flex: 1; }
+
+  .glass-sidebar__footer {
+    border-top: 1px solid var(--glass-border);
+    padding-top: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .glass-sidebar__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .glass-sidebar__user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .glass-sidebar__user-email {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Main Content ── */
+  .glass-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ── Top Bar ── */
+  .glass-topbar {
+    height: 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-6);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .glass-topbar__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 14px;
+  }
+
+  .glass-topbar__breadcrumb-item {
+    color: var(--text-tertiary);
+  }
+
+  .glass-topbar__breadcrumb-current {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .glass-topbar__right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .glass-search {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 220px;
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-search:hover {
+    background: rgba(255,255,255,0.7);
+    border-color: var(--accent);
+  }
+
+  .glass-search kbd {
+    margin-left: auto;
+    font-family: inherit;
+    font-size: 11px;
+    padding: 1px 6px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 4px;
+    color: var(--text-tertiary);
+  }
+
+  .glass-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--glass-border-subtle);
+  }
+
+  .glass-icon-btn:hover {
+    background: rgba(255,255,255,0.6);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+
+  /* ── Content Area ── */
+  .glass-content {
+    flex: 1;
+    padding: var(--space-6);
+    overflow-y: auto;
+  }
+
+  .glass-content__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+  }
+
+  .glass-content__title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+  }
+
+  .glass-content__subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .glass-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-5);
+    height: 40px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+  }
+
+  .glass-btn--primary {
+    background: linear-gradient(135deg, var(--accent), #a855f7);
+    color: white;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+  }
+
+  .glass-btn--primary:hover {
+    box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .glass-btn--glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-btn--glass:hover {
+    background: var(--glass-bg-strong);
+    transform: translateY(-1px);
+  }
+
+  /* ── Toolbar ── */
+  .glass-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .glass-tab-bar {
+    display: flex;
+    background: rgba(255,255,255,0.4);
+    border-radius: var(--radius-full);
+    padding: 3px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-tab {
+    padding: var(--space-1) var(--space-4);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+  }
+
+  .glass-tab:hover {
+    color: var(--text-primary);
+  }
+
+  .glass-tab--active {
+    background: white;
+    color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-weight: 600;
+  }
+
+  .glass-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-filter-chip:hover {
+    background: rgba(255,255,255,0.6);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Entry Cards ── */
+  .glass-entries {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .glass-entry {
+    display: flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-entry:hover {
+    background: var(--glass-bg-strong);
+    box-shadow: var(--glass-shadow-hover);
+    transform: translateY(-2px);
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+
+  .glass-entry__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--space-4);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .glass-entry__icon--blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #3b82f6; }
+  .glass-entry__icon--purple { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #8b5cf6; }
+  .glass-entry__icon--green { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #10b981; }
+  .glass-entry__icon--amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #f59e0b; }
+  .glass-entry__icon--pink { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #ec4899; }
+  .glass-entry__icon--cyan { background: linear-gradient(135deg, #cffafe, #a5f3fc); color: #06b6d4; }
+
+  .glass-entry__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .glass-entry__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .glass-entry__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  .glass-entry__meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+    opacity: 0.5;
+  }
+
+  .glass-entry__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: var(--space-4);
+    flex-shrink: 0;
+  }
+
+  .glass-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+  }
+
+  .glass-status--published {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+  }
+
+  .glass-status--draft {
+    background: rgba(245, 158, 11, 0.12);
+    color: #b45309;
+  }
+
+  .glass-status--review {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--accent);
+  }
+
+  .glass-status__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .glass-status--published .glass-status__dot { background: var(--success); }
+  .glass-status--draft .glass-status__dot { background: var(--warning); }
+  .glass-status--review .glass-status__dot { background: var(--accent); }
+
+  .glass-entry__date {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  .glass-entry__arrow {
+    color: var(--text-tertiary);
+    opacity: 0;
+    transition: all 0.2s;
+  }
+
+  .glass-entry:hover .glass-entry__arrow {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+
+  /* ── Stats bar ── */
+  .glass-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .glass-stat {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.2s;
+  }
+
+  .glass-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
+  }
+
+  .glass-stat__value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+  }
+
+  .glass-stat__label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  .glass-stat__trend {
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .glass-stat__trend--up { color: var(--success); }
+  .glass-stat__trend--neutral { color: var(--text-tertiary); }
+
+  /* ── Pagination ── */
+  .glass-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+  }
+
+  .glass-pagination__btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .glass-pagination__btn:hover {
+    background: var(--glass-bg-strong);
+    transform: translateY(-1px);
+  }
+
+  .glass-pagination__btn--active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  }
+
+  .glass-pagination__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    transform: none;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .glass-sidebar { display: none; }
+    .glass-content { padding: var(--space-4); }
+    .glass-content__title { font-size: 22px; }
+    .glass-stats { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .glass-entry__date { display: none; }
+    .glass-topbar { padding: 0 var(--space-4); }
+    .glass-search { min-width: auto; }
+    .glass-search span { display: none; }
+    .glass-toolbar { flex-wrap: wrap; }
+    .glass-entry { padding: var(--space-3); }
+    .glass-stat { padding: var(--space-3); }
+    .glass-stat__value { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glass-shell">
+  <!-- ── Sidebar ── -->
+  <aside class="glass-sidebar">
+    <div class="glass-sidebar__header">
+      <div class="glass-sidebar__logo">S</div>
+      <div>
+        <div class="glass-sidebar__brand">Sveltia CMS</div>
+        <div class="glass-sidebar__project">my-website</div>
+      </div>
+    </div>
+
+    <div class="glass-sidebar__section">
+      <div class="glass-sidebar__label">Collections</div>
+      <a class="glass-sidebar__item glass-sidebar__item--active" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/></svg>
+        Blog Posts
+        <span class="glass-sidebar__item-count">24</span>
+      </a>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="1" width="12" height="16" rx="2"/><line x1="6" y1="5" x2="12" y2="5"/><line x1="6" y1="8.5" x2="12" y2="8.5"/><line x1="6" y1="12" x2="9" y2="12"/></svg>
+        Pages
+        <span class="glass-sidebar__item-count">8</span>
+      </a>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="9" cy="6" r="3.5"/><path d="M2.5 17c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/></svg>
+        Authors
+        <span class="glass-sidebar__item-count">4</span>
+      </a>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M6 7h6M6 10.5h4"/></svg>
+        Projects
+        <span class="glass-sidebar__item-count">12</span>
+      </a>
+    </div>
+
+    <div class="glass-sidebar__section">
+      <div class="glass-sidebar__label">Data</div>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 3.5h14M2 9h14M2 14.5h8"/></svg>
+        Categories
+        <span class="glass-sidebar__item-count">6</span>
+      </a>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="9" cy="9" r="6"/><path d="M9 5.5v3.5l2.5 1.5"/></svg>
+        Tags
+        <span class="glass-sidebar__item-count">18</span>
+      </a>
+      <a class="glass-sidebar__item" href="#">
+        <svg class="glass-sidebar__item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 4h12M5 8.5h10M7 13h8"/></svg>
+        Navigation
+      </a>
+    </div>
+
+    <div class="glass-sidebar__spacer"></div>
+
+    <div class="glass-sidebar__footer">
+      <div class="glass-sidebar__avatar">JH</div>
+      <div>
+        <div class="glass-sidebar__user-name">Jose Hernando</div>
+        <div class="glass-sidebar__user-email">jose@example.com</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="glass-main">
+    <!-- Top Bar -->
+    <header class="glass-topbar">
+      <div class="glass-topbar__breadcrumb">
+        <span class="glass-topbar__breadcrumb-item">Collections</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M4 2l4 4-4 4"/></svg>
+        <span class="glass-topbar__breadcrumb-current">Blog Posts</span>
+      </div>
+      <div class="glass-topbar__right">
+        <div class="glass-search">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M9 9l3.5 3.5"/></svg>
+          <span>Search entries...</span>
+          <kbd>⌘K</kbd>
+        </div>
+        <button class="glass-icon-btn" title="Notifications">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5a4.5 4.5 0 0 1 4.5 4.5v2.5l2 2H1.5l2-2V6A4.5 4.5 0 0 1 8 1.5z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0"/></svg>
+        </button>
+        <button class="glass-icon-btn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M4 4l1 1M11 11l1 1M4 12l1-1M11 5l1-1"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="glass-content">
+      <!-- Header -->
+      <div class="glass-content__header">
+        <div>
+          <h1 class="glass-content__title">Blog Posts</h1>
+          <p class="glass-content__subtitle">24 entries across 3 languages</p>
+        </div>
+        <a class="glass-btn glass-btn--primary" href="#">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 2v10M2 7h10"/></svg>
+          New Entry
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="glass-stats">
+        <div class="glass-stat">
+          <div class="glass-stat__value">24</div>
+          <div class="glass-stat__label">Total Entries</div>
+          <div class="glass-stat__trend glass-stat__trend--up">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H2z"/></svg>
+            +3 this week
+          </div>
+        </div>
+        <div class="glass-stat">
+          <div class="glass-stat__value">19</div>
+          <div class="glass-stat__label">Published</div>
+          <div class="glass-stat__trend glass-stat__trend--up">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H2z"/></svg>
+            +2 this week
+          </div>
+        </div>
+        <div class="glass-stat">
+          <div class="glass-stat__value">3</div>
+          <div class="glass-stat__label">Drafts</div>
+          <div class="glass-stat__trend glass-stat__trend--neutral">
+            No change
+          </div>
+        </div>
+        <div class="glass-stat">
+          <div class="glass-stat__value">2</div>
+          <div class="glass-stat__label">In Review</div>
+          <div class="glass-stat__trend glass-stat__trend--up">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H2z"/></svg>
+            +1 this week
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="glass-toolbar">
+        <div class="glass-tab-bar">
+          <button class="glass-tab glass-tab--active">All</button>
+          <button class="glass-tab">Published</button>
+          <button class="glass-tab">Drafts</button>
+          <button class="glass-tab">In Review</button>
+        </div>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button class="glass-filter-chip">
+            Category
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 3l3 3 3-3"/></svg>
+          </button>
+          <button class="glass-filter-chip">
+            Language
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 3l3 3 3-3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Entry List -->
+      <div class="glass-entries">
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--blue">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">Getting Started with Sveltia CMS</div>
+            <div class="glass-entry__meta">
+              <span>Tutorial</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>getting-started-sveltia-cms</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--published">
+              <span class="glass-status__dot"></span>
+              Published
+            </span>
+            <span class="glass-entry__date">Mar 8</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--purple">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">Migrating from Netlify CMS</div>
+            <div class="glass-entry__meta">
+              <span>Guide</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>migrating-from-netlify-cms</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--published">
+              <span class="glass-status__dot"></span>
+              Published
+            </span>
+            <span class="glass-entry__date">Mar 7</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--green">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">Understanding i18n File Structures</div>
+            <div class="glass-entry__meta">
+              <span>Technical</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>understanding-i18n-file-structures</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--draft">
+              <span class="glass-status__dot"></span>
+              Draft
+            </span>
+            <span class="glass-entry__date">Mar 6</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--amber">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">AI-Powered Content Translation</div>
+            <div class="glass-entry__meta">
+              <span>Feature</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>ai-powered-content-translation</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--review">
+              <span class="glass-status__dot"></span>
+              In Review
+            </span>
+            <span class="glass-entry__date">Mar 5</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--pink">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">Best Practices for Git-Based CMS</div>
+            <div class="glass-entry__meta">
+              <span>Opinion</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>best-practices-git-based-cms</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--published">
+              <span class="glass-status__dot"></span>
+              Published
+            </span>
+            <span class="glass-entry__date">Mar 3</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+
+        <div class="glass-entry">
+          <div class="glass-entry__icon glass-entry__icon--cyan">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="6" x2="14" y2="6"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>
+          </div>
+          <div class="glass-entry__content">
+            <div class="glass-entry__title">Working with Custom Widgets</div>
+            <div class="glass-entry__meta">
+              <span>Tutorial</span>
+              <span class="glass-entry__meta-dot"></span>
+              <span>working-custom-widgets</span>
+            </div>
+          </div>
+          <div class="glass-entry__right">
+            <span class="glass-status glass-status--draft">
+              <span class="glass-status__dot"></span>
+              Draft
+            </span>
+            <span class="glass-entry__date">Feb 28</span>
+            <svg class="glass-entry__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="glass-pagination">
+        <button class="glass-pagination__btn" disabled>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2L4 6l4 4"/></svg>
+        </button>
+        <button class="glass-pagination__btn glass-pagination__btn--active">1</button>
+        <button class="glass-pagination__btn">2</button>
+        <button class="glass-pagination__btn">3</button>
+        <button class="glass-pagination__btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2l4 4-4 4"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
