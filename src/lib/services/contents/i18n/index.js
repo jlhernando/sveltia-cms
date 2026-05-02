@@ -48,7 +48,10 @@ export const getLocaleLabel = (
   const formatter = new Intl.DisplayNames(displayLocale, { type: 'language' });
 
   try {
-    return formatter.of(canonicalLocale);
+    const label = formatter.of(canonicalLocale);
+
+    // Capitalize first letter for display (e.g. "español" → "Español")
+    return label ? label.charAt(0).toUpperCase() + label.slice(1) : label;
   } catch (/** @type {any} */ ex) {
     // eslint-disable-next-line no-console
     console.error(ex);
